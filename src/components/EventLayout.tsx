@@ -14,11 +14,11 @@ import { PullToRefresh } from "./PullToRefresh";
 import { OfflineBanner } from "./OfflineBanner";
 
 interface LayoutContextValue {
-  scrollRef: React.RefObject<HTMLDivElement | null>;
+  scrollRef: React.RefObject<HTMLDivElement>;
 }
 
 const LayoutContext = createContext<LayoutContextValue>({
-  scrollRef: { current: null },
+  scrollRef: { current: null } as React.RefObject<HTMLDivElement>,
 });
 
 export function useLayout() {
@@ -77,10 +77,8 @@ export function EventLayout() {
           className="mx-auto min-h-dvh max-w-screen-sm pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
           {...pageTransition}
         >
-          <PullToRefresh onRefresh={handleRefresh}>
-            <div ref={scrollRef} className="h-full overflow-y-auto">
-              <Outlet />
-            </div>
+          <PullToRefresh onRefresh={handleRefresh} scrollRef={scrollRef}>
+            <Outlet />
           </PullToRefresh>
         </motion.div>
         <BottomNav slug={slug} />

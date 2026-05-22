@@ -5,42 +5,80 @@ import { hapticPattern } from "../lib/haptic";
 
 interface Props {
   onRefresh: () => Promise<void> | void;
+  scrollRef: React.RefObject<HTMLDivElement>;
   children: React.ReactNode;
 }
 
 const THRESHOLD = 80;
 const MAX_PULL = 120;
 
-export function PullToRefresh({ onRefresh, children }: Props) {
+export function PullToRefresh({ onRefresh, scrollRef, children }: Props) {
   const [pulling, setPulling] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
+
+  // Mutable refs for gesture tracking (don't cause re-renders mid-gesture)
   const startY = useRef(0);
-  const currentY = useRef(0);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isActive = useRef(false);
+  // ── helpers ───────────────────────────────────────────────
+  const getScrollTop = useCallback(() => {
+    return scrollRef.current?.scrollTop ?? 0;
+  }, [scrollRef]);
 
-  const handleTouchStart = useCallback((e: TouchEvent) => {
-    const container = scrollContainerRef.current;
-    if (!container || container.scrollTop > 0 || refreshing) return;
-    startY.current = e.touches[0].clientY;
-    currentY.current = startY.current;
-    setPulling(true);
-  }, [refreshing]);
+  const reset = useCallback(() => {
+    isActive.current = false;
+    setPulling(false);
+    setPullDistance(0);
+  }, []);
 
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (!pulling || refreshing) return;
-    currentY.current = e.touches[0].clientY;
-    const delta = currentY.current - startY.current;
-    if (delta > 0) {
+  // ── touch handlers ──────────────────────────────────────
+  const handleTouchStart = useCallback(
+    (e: TouchEvent) => {
+      if (refreshing) return;
+      startY.current = e.touches[0].clientY;
+      isActive.current = false;
+    },
+    [refreshing],
+  );
+
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (refreshing) return;
+
+      const currentY = e.touches[0].clientY;
+      const delta = currentY - startY.current;
+
+      // Scrolling up from top? Let it pass through normally.
+      if (delta <= 0) {
+        if (isActive.current) reset();
+        return;
+      }
+
+      // User is pulling down — check if we're at the very top.
+      const scrollTop = getScrollTop();
+
+      if (scrollTop > 0) {
+        // Not at top yet — this is normal scroll, don't interfere.
+        if (isActive.current) reset();
+        return;
+      }
+
+      // At top + pulling down → activate pull-to-refresh
       e.preventDefault();
+
+      if (!isActive.current) {
+        isActive.current = true;
+        setPulling(true);
+      }
+
       setPullDistance(Math.min(delta * 0.5, MAX_PULL));
-    }
-  }, [pulling, refreshing]);
+    },
+    [refreshing, getScrollTop, reset],
+  );
 
   const handleTouchEnd = useCallback(async () => {
-    if (!pulling || refreshing) {
-      setPulling(false);
-      setPullDistance(0);
+    if (!isActive.current || refreshing) {
+      reset();
       return;
     }
 
@@ -51,34 +89,39 @@ export function PullToRefresh({ onRefresh, children }: Props) {
         await onRefresh();
       } finally {
         setRefreshing(false);
-        setPullDistance(0);
+        reset();
       }
     } else {
-      setPullDistance(0);
+      reset();
     }
-    setPulling(false);
-  }, [pulling, refreshing, pullDistance, onRefresh]);
+  }, [pullDistance, refreshing, onRefresh, reset]);
 
+  // ── attach listeners ─────────────────────────────────────
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
+    const el = scrollRef.current;
+    if (!el) return;
 
-    container.addEventListener("touchstart", handleTouchStart, { passive: true });
-    container.addEventListener("touchmove", handleTouchMove, { passive: false });
-    container.addEventListener("touchend", handleTouchEnd);
+    el.addEventListener("touchstart", handleTouchStart, { passive: true });
+    el.addEventListener("touchmove", handleTouchMove, { passive: false });
+    el.addEventListener("touchend", handleTouchEnd);
+    el.addEventListener("touchcancel", handleTouchEnd);
 
     return () => {
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchmove", handleTouchMove);
-      container.removeEventListener("touchend", handleTouchEnd);
+      el.removeEventListener("touchstart", handleTouchStart);
+      el.removeEventListener("touchmove", handleTouchMove);
+      el.removeEventListener("touchend", handleTouchEnd);
+      el.removeEventListener("touchcancel", handleTouchEnd);
     };
-  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [handleTouchStart, handleTouchMove, handleTouchEnd, scrollRef]);
 
   const progress = Math.min(pullDistance / THRESHOLD, 1);
   const rotation = progress * 360;
 
   return (
-    <div ref={scrollContainerRef} className="relative h-full overflow-y-auto">
+    <div
+      ref={scrollRef}
+      className="relative h-full overflow-y-auto"
+    >
       <AnimatePresence>
         {(pulling || refreshing) && (
           <motion.div
