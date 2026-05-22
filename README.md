@@ -52,24 +52,31 @@ relative `/ak/...` prefix:
 
 ### Deploying on Vercel
 
-`vercel.json` already wires this up — no env vars needed:
+`vercel.json` + a tiny serverless function wire this up — no env vars needed:
 
 ```json
 {
   "rewrites": [
-    { "source": "/ak/:path*", "destination": "https://ak.kif.rocks/:path*" },
+    { "source": "/ak/:path*", "destination": "/api/proxy?path=:path*" },
     { "source": "/:path*", "destination": "/index.html" }
   ]
 }
 ```
 
-The first rewrite makes Vercel proxy `/ak/*` to the upstream **server-side**, so the
-browser only ever talks to your own origin and CORS never applies. The second is the
-SPA fallback for client-side routes (deep links like `/kif540/schedule`); static assets
-in `dist/` are served by Vercel's filesystem before rewrites run, so they're untouched.
+- The first rewrite sends `/ak/*` to the serverless function in [`api/proxy.js`](api/proxy.js),
+  which fetches the matching path from `https://ak.kif.rocks` and streams the response back.
+  The browser only ever talks to your own origin, so CORS never applies.
+- The second is the SPA fallback for client-side routes (deep links like
+  `/kif540/schedule`). Static assets in `dist/` and the `/api/*` function are resolved by
+  Vercel's filesystem before the rewrites run, so they're untouched.
 
-Project settings on Vercel: framework preset **Vite**, and set **Root Directory** to
-`ak-companion` if this lives in a subfolder of the repo.
+> A plain external rewrite (`destination: "https://ak.kif.rocks/:path*"`) looks simpler
+> and is valid syntax, but proxying to this particular upstream returned a Vercel
+> `NOT_FOUND` in practice. The function is the dependable approach and also follows the
+> upstream's trailing-slash redirects (DRF 301s `/…/api/ak` → `/…/api/ak/`).
+
+Project settings on Vercel: framework preset **Vite**, and set **Root Directory** to the
+folder containing this app if it lives in a subfolder of the repo.
 
 ## Data notes
 

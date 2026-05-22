@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/ak/:path*",
-      "destination": "https://ak.kif.rocks/:path*"
+      "destination": "/api/proxy?path=:path*"
     },
     {
       "source": "/:path*",
