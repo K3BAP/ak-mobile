@@ -14,21 +14,19 @@ const TABS = [
 export function BottomNav({ slug }: { slug: string }) {
   const location = useLocation();
   const activeIndex = TABS.findIndex(
-    (t) => location.pathname === `/${slug}/${t.to}`,
+    (t) => location.pathname.startsWith(`/${slug}/${t.to}`),
   );
 
   return (
     <nav className="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-line/70 bg-bg/85 backdrop-blur-xl">
       <div className="relative mx-auto flex max-w-screen-sm items-stretch justify-around px-1">
-        {/* Animated indicator bar */}
         {activeIndex >= 0 && (
-          <motion.div
+          <div
             className="absolute -top-px h-0.5 w-6 rounded-full bg-accent"
-            animate={{
+            style={{
               left: `${((activeIndex + 0.5) / TABS.length) * 100}%`,
-              x: "-50%",
+              transform: "translateX(-50%)",
             }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           />
         )}
 
