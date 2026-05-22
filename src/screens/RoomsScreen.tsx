@@ -2,7 +2,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, DoorOpen, Users2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useEvent } from "../EventContext";
+import { useLayout } from "../components/EventLayout";
 import { SlotCard } from "../components/SlotCard";
+import { ScrollToTop } from "../components/ScrollToTop";
 import { TopBar } from "../components/TopBar";
 import { EmptyState } from "../components/EmptyState";
 import { useNow } from "../hooks/useNow";
@@ -13,6 +15,7 @@ import { staggerContainer, listItem, springConfig } from "../lib/animations";
 
 export function RoomsScreen() {
   const { slug, data } = useEvent();
+  const { scrollRef } = useLayout();
   const now = useNow();
   const offset = data.offsetMinutes;
   const title = recents.nameFor(slug) ?? slug;
@@ -137,6 +140,7 @@ export function RoomsScreen() {
           </motion.div>
         )}
       </main>
+      <ScrollToTop scrollContainerRef={scrollRef} />
     </>
   );
 }

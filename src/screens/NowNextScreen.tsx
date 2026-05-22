@@ -2,7 +2,9 @@ import { motion } from "framer-motion";
 import { CalendarCheck, Coffee, Moon } from "lucide-react";
 import { useMemo } from "react";
 import { useEvent } from "../EventContext";
+import { useLayout } from "../components/EventLayout";
 import { SlotCard } from "../components/SlotCard";
+import { ScrollToTop } from "../components/ScrollToTop";
 import { TopBar } from "../components/TopBar";
 import { EmptyState } from "../components/EmptyState";
 import { useNow } from "../hooks/useNow";
@@ -12,6 +14,7 @@ import { staggerContainer, listItem, fadeUp } from "../lib/animations";
 
 export function NowNextScreen() {
   const { slug, data } = useEvent();
+  const { scrollRef } = useLayout();
   const now = useNow();
   const title = recents.nameFor(slug) ?? slug;
   const offset = data.offsetMinutes;
@@ -117,6 +120,7 @@ export function NowNextScreen() {
           )}
         </motion.section>
       </main>
+      <ScrollToTop scrollContainerRef={scrollRef} />
     </>
   );
 }

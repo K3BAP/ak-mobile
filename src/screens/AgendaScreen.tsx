@@ -1,25 +1,27 @@
 import { motion } from "framer-motion";
 import { Star, TriangleAlert } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useEvent } from "../EventContext";
+import { useLayout } from "../components/EventLayout";
 import { AKCard } from "../components/AKCard";
 import { SlotCard } from "../components/SlotCard";
+import { ScrollToTop } from "../components/ScrollToTop";
 import { TopBar } from "../components/TopBar";
 import { EmptyState } from "../components/EmptyState";
 import { useNow } from "../hooks/useNow";
-import { favorites, recents } from "../lib/favorites";
+import { useFavorites } from "../FavoritesContext";
+import { recents } from "../lib/favorites";
 import { dayLabelParts, overlaps, rangeLabel } from "../lib/time";
 import type { Owner, ResolvedSlot } from "../lib/types";
 import { staggerContainer, listItem, fadeUp } from "../lib/animations";
 
 export function AgendaScreen() {
   const { slug, data } = useEvent();
+  const { scrollRef } = useLayout();
   const now = useNow();
   const offset = data.offsetMinutes;
   const title = recents.nameFor(slug) ?? slug;
-  const [favSet, setFavSet] = useState<Set<number>>(() => favorites.list(slug));
-
-  const refresh = () => setFavSet(favorites.list(slug));
+  const { ids: favSet, refresh } = useFavorites(slug);
 
   const { scheduled, unscheduled, conflictIds } = useMemo(() => {
     const favAks = [...favSet].map((id) => data.akById.get(id)).filter(Boolean);
@@ -169,6 +171,7 @@ export function AgendaScreen() {
           </>
         )}
       </main>
+      <ScrollToTop scrollContainerRef={scrollRef} />
     </>
   );
 }

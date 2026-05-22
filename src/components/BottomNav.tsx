@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { CalendarDays, LayoutGrid, Radio, Star, DoorOpen } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { haptic } from "../lib/haptic";
 
 const TABS = [
   { to: "now", label: "Now", icon: Radio },
@@ -18,6 +19,7 @@ export function BottomNav({ slug }: { slug: string }) {
           <NavLink
             key={to}
             to={`/${slug}/${to}`}
+            onClick={() => haptic(10)}
             className={({ isActive }) =>
               `relative flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium transition-colors ${
                 isActive ? "text-accent" : "text-ink-faint active:text-ink-soft"

@@ -1,5 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { FavoritesProvider } from "./FavoritesContext";
 import { EventLayout } from "./components/EventLayout";
 import { EventsScreen } from "./screens/EventsScreen";
 import { NowNextScreen } from "./screens/NowNextScreen";
@@ -32,5 +33,9 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
-  return <AnimatedRoutes />;
+  return (
+    <FavoritesProvider>
+      <AnimatedRoutes />
+    </FavoritesProvider>
+  );
 }

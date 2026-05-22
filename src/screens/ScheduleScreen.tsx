@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 import { CalendarX, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useEvent } from "../EventContext";
+import { useLayout } from "../components/EventLayout";
 import { DayTabs } from "../components/DayTabs";
 import { FilterSheet } from "../components/FilterSheet";
 import { SlotCard } from "../components/SlotCard";
+import { ScrollToTop } from "../components/ScrollToTop";
 import { TopBar } from "../components/TopBar";
 import { EmptyState } from "../components/EmptyState";
 import { useNow } from "../hooks/useNow";
@@ -14,6 +16,7 @@ import { staggerContainer, listItem } from "../lib/animations";
 
 export function ScheduleScreen() {
   const { slug, data } = useEvent();
+  const { scrollRef } = useLayout();
   const now = useNow();
   const offset = data.offsetMinutes;
   const title = recents.nameFor(slug) ?? slug;
@@ -129,6 +132,7 @@ export function ScheduleScreen() {
           setRooms(new Set());
         }}
       />
+      <ScrollToTop scrollContainerRef={scrollRef} />
     </>
   );
 }

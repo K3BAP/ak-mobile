@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import type { EventDay } from "../hooks/useEventData";
 import { dayLabelParts } from "../lib/time";
 import { springConfig } from "../lib/animations";
+import { haptic } from "../lib/haptic";
 
 export function DayTabs({
   days,
@@ -22,7 +23,10 @@ export function DayTabs({
         return (
           <motion.button
             key={day.key}
-            onClick={() => onSelect(day.key)}
+            onClick={() => {
+              haptic(10);
+              onSelect(day.key);
+            }}
             className={`relative flex min-w-[3.5rem] shrink-0 flex-col items-center rounded-2xl border px-3 py-2 ${
               active
                 ? "border-accent bg-accent/15 text-accent"

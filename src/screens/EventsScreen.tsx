@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { CardListSkeleton } from "../components/Skeleton";
 import { EmptyState } from "../components/EmptyState";
 import { useResource } from "../hooks/useResource";
+import { useDebounce } from "../hooks/useDebounce";
 import { discoverEvents } from "../lib/events";
 import { recents } from "../lib/favorites";
 import { pageTransition, staggerContainer, listItem } from "../lib/animations";
@@ -14,11 +15,12 @@ export function EventsScreen() {
     discoverEvents(signal),
   );
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query);
   const recent = useMemo(() => recents.list(), []);
 
   const filtered = useMemo(() => {
     const list = data ?? [];
-    const q = query.trim().toLowerCase();
+    const q = debouncedQuery.trim().toLowerCase();
     if (!q) return list;
     return list.filter(
       (e) =>
@@ -26,7 +28,7 @@ export function EventsScreen() {
         e.slug.toLowerCase().includes(q) ||
         e.location.toLowerCase().includes(q),
     );
-  }, [data, query]);
+  }, [data, debouncedQuery]);
 
   return (
     <motion.div className="mx-auto min-h-dvh max-w-screen-sm" {...pageTransition}>

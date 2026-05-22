@@ -2,10 +2,13 @@ import { motion } from "framer-motion";
 import { SearchX } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useEvent } from "../EventContext";
+import { useLayout } from "../components/EventLayout";
 import { AKCard } from "../components/AKCard";
 import { SearchBar } from "../components/SearchBar";
+import { ScrollToTop } from "../components/ScrollToTop";
 import { TopBar } from "../components/TopBar";
 import { EmptyState } from "../components/EmptyState";
+import { useDebounce } from "../hooks/useDebounce";
 import { recents } from "../lib/favorites";
 import { readable, tint } from "../lib/color";
 import { formatTime } from "../lib/time";
@@ -13,8 +16,10 @@ import { staggerContainer, listItem } from "../lib/animations";
 
 export function BrowseScreen() {
   const { slug, data } = useEvent();
+  const { scrollRef } = useLayout();
   const title = recents.nameFor(slug) ?? slug;
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query);
   const [activeCat, setActiveCat] = useState<number | null>(null);
 
   const ownerNames = useMemo(() => {
@@ -32,7 +37,7 @@ export function BrowseScreen() {
   }, [data]);
 
   const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = debouncedQuery.trim().toLowerCase();
     return data.bundle.aks
       .filter((ak) => {
         if (activeCat != null && ak.category !== activeCat) return false;
@@ -44,7 +49,7 @@ export function BrowseScreen() {
         );
       })
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [data.bundle.aks, query, activeCat, ownerNames]);
+  }, [data.bundle.aks, debouncedQuery, activeCat, ownerNames]);
 
   return (
     <>
@@ -115,6 +120,7 @@ export function BrowseScreen() {
           </motion.div>
         )}
       </main>
+      <ScrollToTop scrollContainerRef={scrollRef} />
     </>
   );
 }

@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { useState } from "react";
-import { favorites } from "../lib/favorites";
+import { useFavorites } from "../FavoritesContext";
+import { haptic } from "../lib/haptic";
 import { springConfig } from "../lib/animations";
 
 const sparkleCount = 6;
@@ -18,15 +19,16 @@ export function FavoriteButton({
   size?: "md" | "lg";
   onToggle?: (active: boolean) => void;
 }) {
-  const [active, setActive] = useState(() => favorites.has(slug, akId));
+  const { has, toggle } = useFavorites(slug);
+  const active = has(akId);
   const [showSparkles, setShowSparkles] = useState(false);
   const dim = size === "lg" ? "h-6 w-6" : "h-5 w-5";
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const next = favorites.toggle(slug, akId);
-    setActive(next);
+    haptic();
+    const next = toggle(akId);
     if (next) {
       setShowSparkles(true);
       setTimeout(() => setShowSparkles(false), 600);

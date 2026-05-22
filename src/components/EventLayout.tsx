@@ -1,32 +1,56 @@
 import { AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { EventContext } from "../EventContext";
 import { useEventData } from "../hooks/useEventData";
+import { useOnlineStatus } from "../hooks/useOnlineStatus";
 import { recents } from "../lib/favorites";
 import { pageTransition } from "../lib/animations";
 import { BottomNav } from "./BottomNav";
 import { CardListSkeleton } from "./Skeleton";
 import { TopBar } from "./TopBar";
+import { PullToRefresh } from "./PullToRefresh";
+import { OfflineBanner } from "./OfflineBanner";
+
+interface LayoutContextValue {
+  scrollRef: React.RefObject<HTMLDivElement | null>;
+}
+
+const LayoutContext = createContext<LayoutContextValue>({
+  scrollRef: { current: null },
+});
+
+export function useLayout() {
+  return useContext(LayoutContext);
+}
 
 export function EventLayout() {
   const { slug = "" } = useParams();
   const { data, loading, error, reload } = useEventData(slug);
+  const online = useOnlineStatus();
+  const [lastUpdated, setLastUpdated] = useState<Date | undefined>();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (data) recents.push({ slug, name: slug });
   }, [data, slug]);
 
+  const handleRefresh = async () => {
+    reload();
+    setLastUpdated(new Date());
+  };
+
   if (loading || !data) {
     return (
       <div className="min-h-dvh">
+        <OfflineBanner online={online} lastUpdated={lastUpdated} />
         <TopBar title={slug} back="/" />
         <main className="px-4 py-4">
           {error ? (
             <div className="flex flex-col items-center px-6 py-16 text-center">
               <AlertTriangle className="mb-3 h-8 w-8 text-amber-400" />
-              <p className="font-medium">Couldn't load this event</p>
+              <p className="font-medium">Couldn&apos;t load this event</p>
               <p className="mt-1 text-sm text-ink-faint">
                 Check the event code and your connection.
               </p>
@@ -47,13 +71,20 @@ export function EventLayout() {
 
   return (
     <EventContext.Provider value={{ slug, data }}>
-      <motion.div
-        className="mx-auto min-h-dvh max-w-screen-sm pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
-        {...pageTransition}
-      >
-        <Outlet />
-      </motion.div>
-      <BottomNav slug={slug} />
+      <LayoutContext.Provider value={{ scrollRef }}>
+        <OfflineBanner online={online} lastUpdated={lastUpdated} />
+        <motion.div
+          className="mx-auto min-h-dvh max-w-screen-sm pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
+          {...pageTransition}
+        >
+          <PullToRefresh onRefresh={handleRefresh}>
+            <div ref={scrollRef} className="h-full overflow-y-auto">
+              <Outlet />
+            </div>
+          </PullToRefresh>
+        </motion.div>
+        <BottomNav slug={slug} />
+      </LayoutContext.Provider>
     </EventContext.Provider>
   );
 }

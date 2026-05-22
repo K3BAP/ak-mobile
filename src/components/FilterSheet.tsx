@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import type { Category, Room } from "../lib/types";
 import { readable, tint } from "../lib/color";
 import { backdropAnimation, springConfig } from "../lib/animations";
+import { haptic } from "../lib/haptic";
 
 interface Props {
   open: boolean;
@@ -128,7 +129,10 @@ function Chip({
 }) {
   return (
     <motion.button
-      onClick={onClick}
+      onClick={() => {
+        haptic(10);
+        onClick();
+      }}
       className={`rounded-full border px-3 py-1.5 text-sm font-medium ${
         active ? "border-transparent" : "border-line text-ink-soft active:bg-bg-card"
       }`}
