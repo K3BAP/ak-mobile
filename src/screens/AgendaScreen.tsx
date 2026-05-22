@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Star, TriangleAlert } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useEvent } from "../EventContext";
@@ -9,6 +10,7 @@ import { useNow } from "../hooks/useNow";
 import { favorites, recents } from "../lib/favorites";
 import { dayLabelParts, overlaps, rangeLabel } from "../lib/time";
 import type { Owner, ResolvedSlot } from "../lib/types";
+import { staggerContainer, listItem, fadeUp } from "../lib/animations";
 
 export function AgendaScreen() {
   const { slug, data } = useEvent();
@@ -78,79 +80,92 @@ export function AgendaScreen() {
         ) : (
           <>
             {conflictIds.size > 0 && (
-              <div className="flex items-start gap-2 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-200">
+              <motion.div
+                className="flex items-start gap-2 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-200"
+                variants={fadeUp}
+                initial="initial"
+                animate="animate"
+              >
                 <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0" />
                 <p>
                   Some starred sessions overlap. Conflicting times are flagged below.
                 </p>
-              </div>
+              </motion.div>
             )}
 
-            {days.map(([key, slots]) => {
-              const [date, weekday] = key.split("|");
-              return (
-                <section key={key}>
+            <motion.div
+              className="space-y-5"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+            >
+              {days.map(([key, slots]) => {
+                const [date, weekday] = key.split("|");
+                return (
+                  <motion.section key={key} variants={fadeUp}>
+                    <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-faint">
+                      {weekday}, {date}
+                    </h2>
+                    <div className="space-y-3">
+                      {slots.map((rs) => {
+                        const conflict = conflictIds.has(rs.slot.id);
+                        return (
+                          <motion.div key={rs.slot.id} variants={listItem}>
+                            {conflict && (
+                              <p className="mb-1 flex items-center gap-1 pl-1 text-xs font-medium text-amber-300">
+                                <TriangleAlert className="h-3.5 w-3.5" />
+                                Overlaps {rangeLabel(rs.start, rs.end, offset)}
+                              </p>
+                            )}
+                            <div
+                              className={
+                                conflict
+                                  ? "rounded-2xl ring-2 ring-amber-500/40"
+                                  : undefined
+                              }
+                            >
+                              <SlotCard
+                                slug={slug}
+                                rs={rs}
+                                offsetMinutes={offset}
+                                now={now}
+                              />
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </motion.section>
+                );
+              })}
+
+              {unscheduled.length > 0 && (
+                <motion.section variants={fadeUp}>
                   <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-faint">
-                    {weekday}, {date}
+                    Not yet scheduled
                   </h2>
                   <div className="space-y-3">
-                    {slots.map((rs) => {
-                      const conflict = conflictIds.has(rs.slot.id);
-                      return (
-                        <div key={rs.slot.id}>
-                          {conflict && (
-                            <p className="mb-1 flex items-center gap-1 pl-1 text-xs font-medium text-amber-300">
-                              <TriangleAlert className="h-3.5 w-3.5" />
-                              Overlaps {rangeLabel(rs.start, rs.end, offset)}
-                            </p>
-                          )}
-                          <div
-                            className={
-                              conflict
-                                ? "rounded-2xl ring-2 ring-amber-500/40"
-                                : undefined
-                            }
-                          >
-                            <SlotCard
-                              slug={slug}
-                              rs={rs}
-                              offsetMinutes={offset}
-                              now={now}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
+                    {unscheduled.map((ak) => (
+                      <motion.div key={ak!.id} variants={listItem}>
+                        <AKCard
+                          slug={slug}
+                          ak={ak!}
+                          category={
+                            ak!.category != null
+                              ? data.categoryById.get(ak!.category) ?? null
+                              : null
+                          }
+                          owners={ak!.owners
+                            .map((id) => data.ownerById.get(id))
+                            .filter((o): o is Owner => Boolean(o))}
+                          onToggleFavorite={refresh}
+                        />
+                      </motion.div>
+                    ))}
                   </div>
-                </section>
-              );
-            })}
-
-            {unscheduled.length > 0 && (
-              <section>
-                <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-faint">
-                  Not yet scheduled
-                </h2>
-                <div className="space-y-3">
-                  {unscheduled.map((ak) => (
-                    <AKCard
-                      key={ak!.id}
-                      slug={slug}
-                      ak={ak!}
-                      category={
-                        ak!.category != null
-                          ? data.categoryById.get(ak!.category) ?? null
-                          : null
-                      }
-                      owners={ak!.owners
-                        .map((id) => data.ownerById.get(id))
-                        .filter((o): o is Owner => Boolean(o))}
-                      onToggleFavorite={refresh}
-                    />
-                  ))}
-                </div>
-              </section>
-            )}
+                </motion.section>
+              )}
+            </motion.div>
           </>
         )}
       </main>

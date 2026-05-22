@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { CalendarDays, LayoutGrid, Radio, Star, DoorOpen } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -18,18 +19,30 @@ export function BottomNav({ slug }: { slug: string }) {
             key={to}
             to={`/${slug}/${to}`}
             className={({ isActive }) =>
-              `flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium transition-colors ${
+              `relative flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium transition-colors ${
                 isActive ? "text-accent" : "text-ink-faint active:text-ink-soft"
               }`
             }
           >
             {({ isActive }) => (
               <>
-                <Icon
-                  className="h-[22px] w-[22px]"
-                  strokeWidth={isActive ? 2.4 : 1.9}
-                />
+                <motion.div
+                  animate={{ scale: isActive ? 1.1 : 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                >
+                  <Icon
+                    className="h-[22px] w-[22px]"
+                    strokeWidth={isActive ? 2.4 : 1.9}
+                  />
+                </motion.div>
                 {label}
+                {isActive && (
+                  <motion.div
+                    layoutId="bottom-nav-indicator"
+                    className="absolute -top-px left-1/2 h-0.5 w-6 -translate-x-1/2 rounded-full bg-accent"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
               </>
             )}
           </NavLink>

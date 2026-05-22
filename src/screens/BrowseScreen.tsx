@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { SearchX } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useEvent } from "../EventContext";
@@ -8,6 +9,7 @@ import { EmptyState } from "../components/EmptyState";
 import { recents } from "../lib/favorites";
 import { readable, tint } from "../lib/color";
 import { formatTime } from "../lib/time";
+import { staggerContainer, listItem } from "../lib/animations";
 
 export function BrowseScreen() {
   const { slug, data } = useEvent();
@@ -80,28 +82,37 @@ export function BrowseScreen() {
         {results.length === 0 ? (
           <EmptyState icon={SearchX} title="No AKs found" hint="Try a different search." />
         ) : (
-          results.map((ak) => {
-            const sched = data.slotsByAk.get(ak.id)?.[0];
-            return (
-              <AKCard
-                key={ak.id}
-                slug={slug}
-                ak={ak}
-                category={ak.category != null ? data.categoryById.get(ak.category) ?? null : null}
-                owners={ak.owners
-                  .map((id) => data.ownerById.get(id))
-                  .filter((o): o is NonNullable<typeof o> => Boolean(o))}
-                schedule={
-                  sched
-                    ? {
-                        time: formatTime(sched.start, data.offsetMinutes),
-                        room: sched.room?.name ?? "TBA",
-                      }
-                    : null
-                }
-              />
-            );
-          })
+          <motion.div
+            className="space-y-3"
+            variants={staggerContainer}
+            initial="initial"
+            animate="animate"
+            key={activeCat}
+          >
+            {results.map((ak) => {
+              const sched = data.slotsByAk.get(ak.id)?.[0];
+              return (
+                <motion.div key={ak.id} variants={listItem}>
+                  <AKCard
+                    slug={slug}
+                    ak={ak}
+                    category={ak.category != null ? data.categoryById.get(ak.category) ?? null : null}
+                    owners={ak.owners
+                      .map((id) => data.ownerById.get(id))
+                      .filter((o): o is NonNullable<typeof o> => Boolean(o))}
+                    schedule={
+                      sched
+                        ? {
+                            time: formatTime(sched.start, data.offsetMinutes),
+                            room: sched.room?.name ?? "TBA",
+                          }
+                        : null
+                    }
+                  />
+                </motion.div>
+              );
+            })}
+          </motion.div>
         )}
       </main>
     </>
@@ -120,14 +131,16 @@ function Pill({
   onClick: () => void;
 }) {
   return (
-    <button
+    <motion.button
       onClick={onClick}
-      className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors ${
+      className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-medium ${
         active ? "border-transparent" : "border-line text-ink-soft active:bg-bg-card"
       }`}
       style={active ? { backgroundColor: tint(color, 0.2), color: readable(color) } : undefined}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
     >
       {label}
-    </button>
+    </motion.button>
   );
 }

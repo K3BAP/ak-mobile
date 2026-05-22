@@ -1,9 +1,11 @@
+import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { ResolvedSlot } from "../lib/types";
 import { accent } from "../lib/color";
 import { durationLabel, formatTime, parseDurationHours } from "../lib/time";
 import { CategoryPill } from "./CategoryPill";
+import { springConfig } from "../lib/animations";
 
 export function SlotCard({
   slug,
@@ -64,7 +66,7 @@ export function SlotCard({
     </>
   );
 
-  const className = `flex items-start gap-3 rounded-2xl border bg-bg-card p-3 shadow-soft transition-colors active:bg-bg-elevated ${
+  const className = `flex items-start gap-3 rounded-2xl border bg-bg-card p-3 shadow-soft ${
     live ? "border-emerald-500/40" : "border-line"
   }`;
 
@@ -75,5 +77,13 @@ export function SlotCard({
       </Link>
     );
   }
-  return <div className={className}>{inner}</div>;
+  return (
+    <motion.div
+      className={className}
+      whileTap={{ scale: 0.98 }}
+      transition={springConfig}
+    >
+      {inner}
+    </motion.div>
+  );
 }

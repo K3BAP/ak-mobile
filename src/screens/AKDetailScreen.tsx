@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { CalendarClock, ExternalLink, FileText, MapPin, Target, Users } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useEvent } from "../EventContext";
@@ -7,6 +8,7 @@ import { TopBar } from "../components/TopBar";
 import { EmptyState } from "../components/EmptyState";
 import { accent } from "../lib/color";
 import { dayLabelParts, rangeLabel } from "../lib/time";
+import { staggerContainer, fadeUp } from "../lib/animations";
 
 export function AKDetailScreen() {
   const { slug, data } = useEvent();
@@ -36,9 +38,12 @@ export function AKDetailScreen() {
       />
 
       <main className="px-4 py-4">
-        <div
+        <motion.div
           className="rounded-2xl border border-line bg-bg-card p-4 shadow-soft"
           style={{ borderLeft: `4px solid ${accent(category?.color)}` }}
+          variants={fadeUp}
+          initial="initial"
+          animate="animate"
         >
           <div className="mb-2 flex flex-wrap items-center gap-2">
             {category && <CategoryPill name={category.name} color={category.color} />}
@@ -70,69 +75,86 @@ export function AKDetailScreen() {
               </span>
             </p>
           )}
-        </div>
+        </motion.div>
 
-        {slots.length > 0 && (
-          <Section icon={CalendarClock} title="Scheduled">
-            <div className="space-y-2">
-              {slots.map((rs) => {
-                const p = dayLabelParts(rs.start, offset);
-                return (
-                  <div
-                    key={rs.slot.id}
-                    className="flex items-center justify-between rounded-xl border border-line bg-bg-card px-3 py-2.5"
-                  >
-                    <div>
-                      <p className="text-sm font-semibold">
-                        {p.weekday}, {p.month} {p.day}
-                      </p>
-                      <p className="text-xs text-ink-faint tabular-nums">
-                        {rangeLabel(rs.start, rs.end, offset)}
-                      </p>
-                    </div>
-                    {rs.room && (
-                      <span className="inline-flex items-center gap-1 rounded-lg bg-bg-elevated px-2.5 py-1 text-sm font-medium text-ink-soft">
-                        <MapPin className="h-3.5 w-3.5" />
-                        {rs.room.name}
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </Section>
-        )}
+        <motion.div
+          className="space-y-5"
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+        >
+          {slots.length > 0 && (
+            <Section icon={CalendarClock} title="Scheduled">
+              <motion.div className="space-y-2" variants={staggerContainer}>
+                {slots.map((rs) => {
+                  const p = dayLabelParts(rs.start, offset);
+                  return (
+                    <motion.div
+                      key={rs.slot.id}
+                      className="flex items-center justify-between rounded-xl border border-line bg-bg-card px-3 py-2.5"
+                      variants={fadeUp}
+                    >
+                      <div>
+                        <p className="text-sm font-semibold">
+                          {p.weekday}, {p.month} {p.day}
+                        </p>
+                        <p className="text-xs text-ink-faint tabular-nums">
+                          {rangeLabel(rs.start, rs.end, offset)}
+                        </p>
+                      </div>
+                      {rs.room && (
+                        <span className="inline-flex items-center gap-1 rounded-lg bg-bg-elevated px-2.5 py-1 text-sm font-medium text-ink-soft">
+                          <MapPin className="h-3.5 w-3.5" />
+                          {rs.room.name}
+                        </span>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            </Section>
+          )}
 
-        {ak.description && (
-          <Section icon={FileText} title="Description">
-            <p className="whitespace-pre-line text-[15px] leading-relaxed text-ink-soft">
-              {ak.description}
-            </p>
-          </Section>
-        )}
+          {ak.description && (
+            <Section icon={FileText} title="Description">
+              <motion.p
+                className="whitespace-pre-line text-[15px] leading-relaxed text-ink-soft"
+                variants={fadeUp}
+              >
+                {ak.description}
+              </motion.p>
+            </Section>
+          )}
 
-        {ak.goal && (
-          <Section icon={Target} title="Goal">
-            <p className="whitespace-pre-line text-[15px] leading-relaxed text-ink-soft">
-              {ak.goal}
-            </p>
-          </Section>
-        )}
+          {ak.goal && (
+            <Section icon={Target} title="Goal">
+              <motion.p
+                className="whitespace-pre-line text-[15px] leading-relaxed text-ink-soft"
+                variants={fadeUp}
+              >
+                {ak.goal}
+              </motion.p>
+            </Section>
+          )}
 
-        {ak.info && (
-          <Section icon={FileText} title="Info">
-            <p className="whitespace-pre-line text-[15px] leading-relaxed text-ink-soft">
-              {ak.info}
-            </p>
-          </Section>
-        )}
+          {ak.info && (
+            <Section icon={FileText} title="Info">
+              <motion.p
+                className="whitespace-pre-line text-[15px] leading-relaxed text-ink-soft"
+                variants={fadeUp}
+              >
+                {ak.info}
+              </motion.p>
+            </Section>
+          )}
 
-        {(ak.link || ak.protocol_link) && (
-          <div className="mt-5 space-y-2">
-            {ak.link && <LinkRow href={ak.link} label="Wiki / details" />}
-            {ak.protocol_link && <LinkRow href={ak.protocol_link} label="Protocol" />}
-          </div>
-        )}
+          {(ak.link || ak.protocol_link) && (
+            <motion.div className="mt-5 space-y-2" variants={staggerContainer}>
+              {ak.link && <LinkRow href={ak.link} label="Wiki / details" />}
+              {ak.protocol_link && <LinkRow href={ak.protocol_link} label="Protocol" />}
+            </motion.div>
+          )}
+        </motion.div>
       </main>
     </>
   );

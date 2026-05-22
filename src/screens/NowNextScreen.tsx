@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { CalendarCheck, Coffee, Moon } from "lucide-react";
 import { useMemo } from "react";
 import { useEvent } from "../EventContext";
@@ -7,6 +8,7 @@ import { EmptyState } from "../components/EmptyState";
 import { useNow } from "../hooks/useNow";
 import { recents } from "../lib/favorites";
 import { dayLabelParts, relativeLabel } from "../lib/time";
+import { staggerContainer, listItem, fadeUp } from "../lib/animations";
 
 export function NowNextScreen() {
   const { slug, data } = useEvent();
@@ -30,22 +32,33 @@ export function NowNextScreen() {
     <>
       <TopBar title={title} subtitle="Happening now" back="/" />
       <main className="space-y-6 px-4 py-4">
-        <section>
+        <motion.section variants={fadeUp} initial="initial" animate="animate">
           <SectionHeader title="Now" badge={live.length || undefined} />
           {live.length > 0 ? (
-            <div className="space-y-3">
+            <motion.div
+              className="space-y-3"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+            >
               {live.map((rs) => (
-                <SlotCard
-                  key={rs.slot.id}
-                  slug={slug}
-                  rs={rs}
-                  offsetMinutes={offset}
-                  now={now}
-                />
+                <motion.div key={rs.slot.id} variants={listItem}>
+                  <SlotCard
+                    slug={slug}
+                    rs={rs}
+                    offsetMinutes={offset}
+                    now={now}
+                  />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           ) : (
-            <div className="rounded-2xl border border-line bg-bg-card p-5 text-center">
+            <motion.div
+              className="rounded-2xl border border-line bg-bg-card p-5 text-center"
+              variants={fadeUp}
+              initial="initial"
+              animate="animate"
+            >
               {beforeStart ? (
                 <Idle
                   icon={CalendarCheck}
@@ -63,14 +76,19 @@ export function NowNextScreen() {
                   }
                 />
               )}
-            </div>
+            </motion.div>
           )}
-        </section>
+        </motion.section>
 
-        <section>
+        <motion.section variants={fadeUp} initial="initial" animate="animate">
           <SectionHeader title="Up next" />
           {upcoming.length > 0 ? (
-            <div className="space-y-3">
+            <motion.div
+              className="space-y-3"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+            >
               {upcoming.map((rs, i) => {
                 const prev = upcoming[i - 1];
                 const newDay =
@@ -78,7 +96,7 @@ export function NowNextScreen() {
                   dayLabelParts(prev.start, offset).day !==
                     dayLabelParts(rs.start, offset).day;
                 return (
-                  <div key={rs.slot.id}>
+                  <motion.div key={rs.slot.id} variants={listItem}>
                     {newDay && (
                       <p className="mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">
                         {labelDay(rs.start, offset)}
@@ -90,14 +108,14 @@ export function NowNextScreen() {
                       offsetMinutes={offset}
                       now={now}
                     />
-                  </div>
+                  </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           ) : (
             <EmptyState icon={Moon} title="No upcoming sessions" />
           )}
-        </section>
+        </motion.section>
       </main>
     </>
   );

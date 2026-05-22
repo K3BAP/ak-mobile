@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { CalendarRange, ChevronRight, Clock, Github, MapPin, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
@@ -6,6 +7,7 @@ import { EmptyState } from "../components/EmptyState";
 import { useResource } from "../hooks/useResource";
 import { discoverEvents } from "../lib/events";
 import { recents } from "../lib/favorites";
+import { pageTransition, staggerContainer, listItem } from "../lib/animations";
 
 export function EventsScreen() {
   const { data, loading, error } = useResource("events", (signal) =>
@@ -27,7 +29,7 @@ export function EventsScreen() {
   }, [data, query]);
 
   return (
-    <div className="mx-auto min-h-dvh max-w-screen-sm">
+    <motion.div className="mx-auto min-h-dvh max-w-screen-sm" {...pageTransition}>
       <header className="safe-top px-5 pb-2 pt-8">
         <p className="text-sm font-medium text-accent">AK Companion</p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight">Choose an event</h1>
@@ -83,36 +85,44 @@ export function EventsScreen() {
           <EmptyState icon={Search} title="No matching events" />
         )}
 
-        {filtered.map((ev) => (
-          <Link
-            key={ev.slug}
-            to={`/${ev.slug}/now`}
-            onClick={() => recents.push({ slug: ev.slug, name: ev.name })}
-            className="flex items-center gap-3 rounded-2xl border border-line bg-bg-card p-4 shadow-soft transition-colors active:bg-bg-elevated"
-          >
-            <div className="min-w-0 flex-1">
-              <h3 className="text-[15px] font-semibold leading-snug line-clamp-2">
-                {ev.name}
-              </h3>
-              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-faint">
-                {ev.location && (
-                  <span className="inline-flex items-center gap-1">
-                    <MapPin className="h-3.5 w-3.5" />
-                    {ev.location}
-                  </span>
-                )}
-                {ev.when && (
-                  <span className="inline-flex items-center gap-1">
-                    <CalendarRange className="h-3.5 w-3.5" />
-                    {ev.when}
-                  </span>
-                )}
-                <span className="font-mono text-ink-faint/70">{ev.slug}</span>
-              </div>
-            </div>
-            <ChevronRight className="h-5 w-5 shrink-0 text-ink-faint" />
-          </Link>
-        ))}
+        <motion.div
+          className="space-y-3"
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+        >
+          {filtered.map((ev) => (
+            <motion.div key={ev.slug} variants={listItem}>
+              <Link
+                to={`/${ev.slug}/now`}
+                onClick={() => recents.push({ slug: ev.slug, name: ev.name })}
+                className="flex items-center gap-3 rounded-2xl border border-line bg-bg-card p-4 shadow-soft"
+              >
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-[15px] font-semibold leading-snug line-clamp-2">
+                    {ev.name}
+                  </h3>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-faint">
+                    {ev.location && (
+                      <span className="inline-flex items-center gap-1">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {ev.location}
+                      </span>
+                    )}
+                    {ev.when && (
+                      <span className="inline-flex items-center gap-1">
+                        <CalendarRange className="h-3.5 w-3.5" />
+                        {ev.when}
+                      </span>
+                    )}
+                    <span className="font-mono text-ink-faint/70">{ev.slug}</span>
+                  </div>
+                </div>
+                <ChevronRight className="h-5 w-5 shrink-0 text-ink-faint" />
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
 
         <footer className="space-y-2 px-1 pt-6 text-center text-xs text-ink-faint">
           <p>
@@ -140,6 +150,6 @@ export function EventsScreen() {
           </p>
         </footer>
       </main>
-    </div>
+    </motion.div>
   );
 }

@@ -1,10 +1,15 @@
+import { motion } from "framer-motion";
+
 export function Skeleton({ className = "" }: { className?: string }) {
   return (
-    <div
+    <motion.div
       className={`relative overflow-hidden rounded-xl bg-bg-card ${className}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
     >
       <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-    </div>
+    </motion.div>
   );
 }
 

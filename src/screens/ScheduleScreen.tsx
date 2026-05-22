@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { CalendarX, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useEvent } from "../EventContext";
@@ -9,6 +10,7 @@ import { EmptyState } from "../components/EmptyState";
 import { useNow } from "../hooks/useNow";
 import { recents } from "../lib/favorites";
 import { dayKey } from "../lib/time";
+import { staggerContainer, listItem } from "../lib/animations";
 
 export function ScheduleScreen() {
   const { slug, data } = useEvent();
@@ -92,15 +94,24 @@ export function ScheduleScreen() {
             hint={filterCount ? "Try clearing some filters." : "No sessions this day."}
           />
         ) : (
-          slots.map((rs) => (
-            <SlotCard
-              key={rs.slot.id}
-              slug={slug}
-              rs={rs}
-              offsetMinutes={offset}
-              now={now}
-            />
-          ))
+          <motion.div
+            className="space-y-3"
+            variants={staggerContainer}
+            initial="initial"
+            animate="animate"
+            key={activeDay}
+          >
+            {slots.map((rs) => (
+              <motion.div key={rs.slot.id} variants={listItem}>
+                <SlotCard
+                  slug={slug}
+                  rs={rs}
+                  offsetMinutes={offset}
+                  now={now}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
         )}
       </main>
 

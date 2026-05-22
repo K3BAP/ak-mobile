@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { EventLayout } from "./components/EventLayout";
 import { EventsScreen } from "./screens/EventsScreen";
 import { NowNextScreen } from "./screens/NowNextScreen";
@@ -8,20 +9,28 @@ import { AKDetailScreen } from "./screens/AKDetailScreen";
 import { RoomsScreen } from "./screens/RoomsScreen";
 import { AgendaScreen } from "./screens/AgendaScreen";
 
-export default function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
-    <Routes>
-      <Route path="/" element={<EventsScreen />} />
-      <Route path="/:slug" element={<EventLayout />}>
-        <Route index element={<Navigate to="now" replace />} />
-        <Route path="now" element={<NowNextScreen />} />
-        <Route path="schedule" element={<ScheduleScreen />} />
-        <Route path="browse" element={<BrowseScreen />} />
-        <Route path="rooms" element={<RoomsScreen />} />
-        <Route path="agenda" element={<AgendaScreen />} />
-        <Route path="ak/:akId" element={<AKDetailScreen />} />
-      </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<EventsScreen />} />
+        <Route path="/:slug" element={<EventLayout />}>
+          <Route index element={<Navigate to="now" replace />} />
+          <Route path="now" element={<NowNextScreen />} />
+          <Route path="schedule" element={<ScheduleScreen />} />
+          <Route path="browse" element={<BrowseScreen />} />
+          <Route path="rooms" element={<RoomsScreen />} />
+          <Route path="agenda" element={<AgendaScreen />} />
+          <Route path="ak/:akId" element={<AKDetailScreen />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AnimatePresence>
   );
+}
+
+export default function App() {
+  return <AnimatedRoutes />;
 }

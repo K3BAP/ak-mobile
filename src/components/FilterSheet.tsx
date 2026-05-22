@@ -1,6 +1,8 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import type { Category, Room } from "../lib/types";
 import { readable, tint } from "../lib/color";
+import { backdropAnimation, springConfig } from "../lib/animations";
 
 interface Props {
   open: boolean;
@@ -25,67 +27,80 @@ export function FilterSheet({
   onToggleRoom,
   onClear,
 }: Props) {
-  if (!open) return null;
-  const count = selectedCategories.size + selectedRooms.size;
-
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end">
-      <button
-        aria-label="Close filters"
-        onClick={onClose}
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-      />
-      <div className="safe-bottom relative max-h-[80vh] overflow-y-auto rounded-t-3xl border-t border-line bg-bg-soft px-4 pb-6 pt-3 shadow-soft animate-fade-in">
-        <div className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-line" />
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Filters</h2>
-          <div className="flex items-center gap-2">
-            {count > 0 && (
-              <button
-                onClick={onClear}
-                className="rounded-full px-3 py-1 text-sm font-medium text-accent active:bg-bg-card"
-              >
-                Clear
-              </button>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-50 flex flex-col justify-end"
+          initial="initial"
+          animate="animate"
+          exit="exit"
+        >
+          <motion.div
+            aria-label="Close filters"
+            onClick={onClose}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            {...backdropAnimation}
+          />
+          <motion.div
+            className="safe-bottom relative max-h-[80vh] overflow-y-auto rounded-t-3xl border-t border-line bg-bg-soft px-4 pb-6 pt-3 shadow-soft"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 35, mass: 0.6 }}
+          >
+            <div className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-line" />
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Filters</h2>
+              <div className="flex items-center gap-2">
+                {selectedCategories.size + selectedRooms.size > 0 && (
+                  <button
+                    onClick={onClear}
+                    className="rounded-full px-3 py-1 text-sm font-medium text-accent active:bg-bg-card"
+                  >
+                    Clear
+                  </button>
+                )}
+                <button
+                  onClick={onClose}
+                  aria-label="Close"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft active:bg-bg-card"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            {categories.length > 0 && (
+              <Section title="Category">
+                {categories.map((c) => (
+                  <Chip
+                    key={c.id}
+                    label={c.name}
+                    color={c.color}
+                    active={selectedCategories.has(c.id)}
+                    onClick={() => onToggleCategory(c.id)}
+                  />
+                ))}
+              </Section>
             )}
-            <button
-              onClick={onClose}
-              aria-label="Close"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft active:bg-bg-card"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
 
-        {categories.length > 0 && (
-          <Section title="Category">
-            {categories.map((c) => (
-              <Chip
-                key={c.id}
-                label={c.name}
-                color={c.color}
-                active={selectedCategories.has(c.id)}
-                onClick={() => onToggleCategory(c.id)}
-              />
-            ))}
-          </Section>
-        )}
-
-        {rooms.length > 0 && (
-          <Section title="Room">
-            {rooms.map((r) => (
-              <Chip
-                key={r.id}
-                label={r.name}
-                active={selectedRooms.has(r.id)}
-                onClick={() => onToggleRoom(r.id)}
-              />
-            ))}
-          </Section>
-        )}
-      </div>
-    </div>
+            {rooms.length > 0 && (
+              <Section title="Room">
+                {rooms.map((r) => (
+                  <Chip
+                    key={r.id}
+                    label={r.name}
+                    active={selectedRooms.has(r.id)}
+                    onClick={() => onToggleRoom(r.id)}
+                  />
+                ))}
+              </Section>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -112,9 +127,9 @@ function Chip({
   onClick: () => void;
 }) {
   return (
-    <button
+    <motion.button
       onClick={onClick}
-      className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
+      className={`rounded-full border px-3 py-1.5 text-sm font-medium ${
         active ? "border-transparent" : "border-line text-ink-soft active:bg-bg-card"
       }`}
       style={
@@ -122,8 +137,10 @@ function Chip({
           ? { backgroundColor: tint(color, 0.2), color: readable(color) }
           : undefined
       }
+      whileTap={{ scale: 0.95 }}
+      transition={springConfig}
     >
       {label}
-    </button>
+    </motion.button>
   );
 }

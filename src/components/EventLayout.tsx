@@ -1,9 +1,11 @@
 import { AlertTriangle } from "lucide-react";
+import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { EventContext } from "../EventContext";
 import { useEventData } from "../hooks/useEventData";
 import { recents } from "../lib/favorites";
+import { pageTransition } from "../lib/animations";
 import { BottomNav } from "./BottomNav";
 import { CardListSkeleton } from "./Skeleton";
 import { TopBar } from "./TopBar";
@@ -45,9 +47,12 @@ export function EventLayout() {
 
   return (
     <EventContext.Provider value={{ slug, data }}>
-      <div className="mx-auto min-h-dvh max-w-screen-sm pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
+      <motion.div
+        className="mx-auto min-h-dvh max-w-screen-sm pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
+        {...pageTransition}
+      >
         <Outlet />
-      </div>
+      </motion.div>
       <BottomNav slug={slug} />
     </EventContext.Provider>
   );
