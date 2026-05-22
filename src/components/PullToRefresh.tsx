@@ -9,8 +9,8 @@ interface Props {
   children: React.ReactNode;
 }
 
-const THRESHOLD = 80;
 const MAX_PULL = 120;
+const THRESHOLD = 120; // refresh only triggers when icon is fully drawn out
 
 export function PullToRefresh({ onRefresh, scrollRef, children }: Props) {
   const [pulling, setPulling] = useState(false);
@@ -125,7 +125,7 @@ export function PullToRefresh({ onRefresh, scrollRef, children }: Props) {
       <AnimatePresence>
         {(pulling || refreshing) && (
           <motion.div
-            className="absolute left-0 right-0 flex items-center justify-center overflow-hidden"
+            className="absolute left-0 right-0 z-50 flex items-center justify-center overflow-hidden"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: pullDistance, opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
