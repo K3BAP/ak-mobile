@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import { CalendarClock, ExternalLink, FileText, MapPin, Target, Users } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEvent } from "../EventContext";
 import { CategoryPill } from "../components/CategoryPill";
 import { FavoriteButton } from "../components/FavoriteButton";
 import { TopBar } from "../components/TopBar";
 import { EmptyState } from "../components/EmptyState";
+import { useNow } from "../hooks/useNow";
 import { accent } from "../lib/color";
 import { dayLabelParts, rangeLabel } from "../lib/time";
 import { fadeUp } from "../lib/animations";
@@ -13,6 +14,7 @@ import { fadeUp } from "../lib/animations";
 export function AKDetailScreen() {
   const { slug, data } = useEvent();
   const { akId } = useParams();
+  const now = useNow();
   const ak = data.akById.get(Number(akId));
 
   if (!ak) {
@@ -84,10 +86,14 @@ export function AKDetailScreen() {
               <div className="space-y-2">
                 {slots.map((rs, index) => {
                   const p = dayLabelParts(rs.start, offset);
+                  const live = rs.start <= now && now < rs.end;
+                  const past = rs.end <= now;
                   return (
                     <motion.div
                       key={rs.slot.id}
-                      className="flex items-center justify-between rounded-xl border border-line bg-bg-card px-3 py-2.5"
+                      className={`flex items-center justify-between rounded-xl border px-3 py-2.5 ${
+                        live ? "border-emerald-500/40 bg-bg-card" : "border-line bg-bg-card"
+                      } ${past ? "opacity-60" : ""}`}
                       variants={fadeUp}
                       custom={index}
                       initial="initial"
@@ -95,18 +101,32 @@ export function AKDetailScreen() {
                       viewport={{ once: true }}
                     >
                       <div>
-                        <p className="text-sm font-semibold">
-                          {p.weekday}, {p.month} {p.day}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold">
+                            {p.weekday}, {p.month} {p.day}
+                          </p>
+                          {live && (
+                            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-300">
+                              <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-emerald-400" />
+                              Live
+                            </span>
+                          )}
+                        </div>
                         <p className="text-xs text-ink-faint tabular-nums">
                           {rangeLabel(rs.start, rs.end, offset)}
                         </p>
                       </div>
                       {rs.room && (
-                        <span className="inline-flex items-center gap-1 rounded-lg bg-bg-elevated px-2.5 py-1 text-sm font-medium text-ink-soft">
-                          <MapPin className="h-3.5 w-3.5" />
+                        <Link
+                          to={`/${slug}/rooms?room=${rs.room.id}`}
+                          className="inline-flex items-center gap-1 rounded-lg bg-bg-elevated px-2.5 py-1 text-sm font-medium text-ink-soft active:bg-line"
+                        >
+                          <MapPin className="h-3.5 w-3.5 shrink-0" />
                           {rs.room.name}
-                        </span>
+                          {rs.room.location && (
+                            <span className="text-ink-faint">· {rs.room.location}</span>
+                          )}
+                        </Link>
                       )}
                     </motion.div>
                   );

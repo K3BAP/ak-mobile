@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, DoorOpen, Users2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useEvent } from "../EventContext";
 import { useLayout } from "../components/EventLayout";
 import { SlotCard } from "../components/SlotCard";
@@ -19,7 +20,18 @@ export function RoomsScreen() {
   const now = useNow();
   const offset = data.offsetMinutes;
   const title = recents.nameFor(slug) ?? slug;
-  const [openId, setOpenId] = useState<number | null>(null);
+  const [searchParams] = useSearchParams();
+  const linkedRoomId = searchParams.get("room");
+  const [openId, setOpenId] = useState<number | null>(
+    linkedRoomId != null ? Number(linkedRoomId) : null,
+  );
+
+  useEffect(() => {
+    if (linkedRoomId == null) return;
+    setOpenId(Number(linkedRoomId));
+    const el = document.getElementById(`room-${linkedRoomId}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [linkedRoomId]);
 
   const byRoom = useMemo(() => {
     const map = new Map<number, ResolvedSlot[]>();
@@ -51,6 +63,7 @@ export function RoomsScreen() {
               return (
                 <motion.div
                   key={room.id}
+                  id={`room-${room.id}`}
                   variants={listItem}
                   custom={index}
                   initial="initial"
