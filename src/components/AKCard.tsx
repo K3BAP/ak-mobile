@@ -26,7 +26,7 @@ export function AKCard({
 
   return (
     <motion.div
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: 0.96 }}
       transition={springConfig}
     >
       <Link

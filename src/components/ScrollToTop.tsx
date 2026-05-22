@@ -35,11 +35,11 @@ export function ScrollToTop({ scrollContainerRef, threshold = 400 }: Props) {
         <motion.button
           onClick={scrollToTop}
           className="safe-bottom fixed bottom-20 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-line bg-bg-card/90 shadow-soft backdrop-blur-xl text-ink-soft active:bg-bg-elevated"
-          initial={{ opacity: 0, scale: 0.5, y: 20 }}
+          initial={{ opacity: 0, scale: 0.85, y: 8 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.5, y: 20 }}
+          exit={{ opacity: 0, scale: 0.85, y: 8 }}
           transition={springConfig}
-          whileTap={{ scale: 0.9 }}
+          whileTap={{ scale: 0.96 }}
           aria-label="Scroll to top"
         >
           <ArrowUp className="h-5 w-5" />

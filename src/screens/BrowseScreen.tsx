@@ -12,7 +12,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { recents } from "../lib/favorites";
 import { readable, tint } from "../lib/color";
 import { formatTime } from "../lib/time";
-import { listItem } from "../lib/animations";
+import { listItem, springConfig } from "../lib/animations";
 
 export function BrowseScreen() {
   const { slug, data } = useEvent();
@@ -137,8 +137,8 @@ function Pill({
         active ? "border-transparent" : "border-line text-ink-soft active:bg-bg-card"
       }`}
       style={active ? { backgroundColor: tint(color, 0.2), color: readable(color) } : undefined}
-      whileTap={{ scale: 0.95 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      whileTap={{ scale: 0.96 }}
+      transition={springConfig}
     >
       {label}
     </motion.button>

@@ -35,6 +35,14 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer,
+  .animate-pulse-dot,
+  .animate-fade-in {
+    animation: none !important;
+  }
+}
+
 /* Clamp helpers */
 .line-clamp-2 {
   display: -webkit-box;

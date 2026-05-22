@@ -32,7 +32,7 @@ export function DayTabs({
                 ? "border-accent bg-accent/15 text-accent"
                 : "border-line bg-bg-card text-ink-soft active:bg-bg-elevated"
             }`}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.96 }}
             transition={springConfig}
           >
             <span className="text-[11px] font-medium uppercase tracking-wide">

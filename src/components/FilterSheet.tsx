@@ -141,7 +141,7 @@ function Chip({
           ? { backgroundColor: tint(color, 0.2), color: readable(color) }
           : undefined
       }
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.96 }}
       transition={springConfig}
     >
       {label}

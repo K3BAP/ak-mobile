@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { CalendarDays, LayoutGrid, Radio, Star, DoorOpen } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { haptic } from "../lib/haptic";
+import { springConfig } from "../lib/animations";
 
 const TABS = [
   { to: "now", label: "Now", icon: Radio },
@@ -44,8 +45,8 @@ export function BottomNav({ slug }: { slug: string }) {
             {({ isActive }) => (
               <>
                 <motion.div
-                  animate={{ scale: isActive ? 1.1 : 1 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  animate={{ scale: isActive ? 1.06 : 1 }}
+                  transition={springConfig}
                 >
                   <Icon
                     className="h-[22px] w-[22px]"

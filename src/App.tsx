@@ -1,4 +1,4 @@
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, MotionConfig } from "framer-motion";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { FavoritesProvider } from "./FavoritesContext";
 import { EventLayout } from "./components/EventLayout";
@@ -34,8 +34,10 @@ function AnimatedRoutes() {
 
 export default function App() {
   return (
-    <FavoritesProvider>
-      <AnimatedRoutes />
-    </FavoritesProvider>
+    <MotionConfig reducedMotion="user">
+      <FavoritesProvider>
+        <AnimatedRoutes />
+      </FavoritesProvider>
+    </MotionConfig>
   );
 }

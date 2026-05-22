@@ -30,7 +30,7 @@ export function TopBar({
             onClick={onBack}
             aria-label="Back"
             className="-ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink-soft active:bg-bg-card"
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.96 }}
             transition={springConfig}
           >
             <ChevronLeft className="h-6 w-6" />
