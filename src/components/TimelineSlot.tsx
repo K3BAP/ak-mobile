@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Star } from "lucide-react";
 import type { ResolvedSlot } from "../lib/types";
 import { accent } from "../lib/color";
 import { durationLabel, formatTime, parseDurationHours } from "../lib/time";
@@ -9,10 +10,11 @@ interface Props {
   rs: ResolvedSlot;
   offsetMinutes: number;
   now?: Date;
+  isFavorited: boolean;
   style: React.CSSProperties;
 }
 
-export function TimelineSlot({ slug, rs, offsetMinutes, now, style }: Props) {
+export function TimelineSlot({ slug, rs, offsetMinutes, now, isFavorited, style }: Props) {
   const live = now ? rs.start <= now && now < rs.end : false;
   const title = rs.ak?.name ?? "Reserved";
   const color = accent(rs.category?.color);
@@ -30,9 +32,14 @@ export function TimelineSlot({ slug, rs, offsetMinutes, now, style }: Props) {
       </div>
 
       {/* Title */}
-      <h3 className="text-[13px] font-semibold leading-tight line-clamp-3">
-        {title}
-      </h3>
+      <div className="flex items-start gap-1">
+        {isFavorited && (
+          <Star className="mt-0.5 h-3 w-3 shrink-0 fill-amber-400 text-amber-400" />
+        )}
+        <h3 className="text-[13px] font-semibold leading-tight line-clamp-3">
+          {title}
+        </h3>
+      </div>
 
       {/* Room */}
       {rs.room && (
@@ -52,8 +59,13 @@ export function TimelineSlot({ slug, rs, offsetMinutes, now, style }: Props) {
   );
 
   const className =
-    "absolute rounded-xl border bg-bg-card shadow-soft overflow-hidden transition-colors active:bg-bg-elevated " +
-    (live ? "border-emerald-500/40" : "border-line");
+    "absolute rounded-xl border shadow-soft overflow-hidden transition-colors active:bg-bg-elevated " +
+    (live
+      ? "border-emerald-500/40 "
+      : isFavorited
+        ? "border-amber-500/30 "
+        : "border-line ") +
+    (isFavorited ? "bg-amber-500/[0.04] " : "bg-bg-card ");
 
   if (rs.ak) {
     return (

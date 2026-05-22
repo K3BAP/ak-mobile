@@ -18,7 +18,7 @@ export function AKDetailScreen() {
   if (!ak) {
     return (
       <>
-        <TopBar title="Not found" back={`/${slug}/browse`} />
+        <TopBar title="Not found" back />
         <EmptyState icon={FileText} title="This AK doesn't exist" />
       </>
     );
@@ -33,7 +33,7 @@ export function AKDetailScreen() {
     <>
       <TopBar
         title={ak.short_name || "AK"}
-        back={`/${slug}/browse`}
+        back
         right={<FavoriteButton slug={slug} akId={ak.id} size="lg" />}
       />
 

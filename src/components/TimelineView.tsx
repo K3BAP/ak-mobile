@@ -1,13 +1,14 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef } from "react";
 import type { ResolvedSlot } from "../lib/types";
+import { useFavorites } from "../FavoritesContext";
 import { formatTime, minutesBetween } from "../lib/time";
 import { TimelineSlot } from "./TimelineSlot";
 
 // ── constants ─────────────────────────────────────────────
 const PX_PER_MIN = 1.5; // 1 hour = 90 px vertical
 const SLOT_MIN_W = 160; // px
-const SLOT_MIN_H = 60; // px
+const SLOT_MIN_H = 68; // px  (~45 min at 1.5 px/min)
 const GAP_X = 8; // px between columns
 const TIME_COL_W = 48; // px
 
@@ -67,6 +68,7 @@ interface Props {
 
 export function TimelineView({ slots, offsetMinutes, slug, now, scrollContainerRef }: Props) {
   const nowRef = useRef<HTMLDivElement>(null);
+  const { ids: favIds } = useFavorites(slug);
 
   const { columns, dayStart, dayEnd, totalMin, numCols } = useMemo(() => {
     const colMap = assignColumns(slots);
@@ -219,6 +221,7 @@ export function TimelineView({ slots, offsetMinutes, slug, now, scrollContainerR
                 rs={rs}
                 offsetMinutes={offsetMinutes}
                 now={now}
+                isFavorited={rs.ak != null && favIds.has(rs.ak.id)}
                 style={{
                   top,
                   height,

@@ -12,7 +12,7 @@ export function TopBar({
 }: {
   title: string;
   subtitle?: string;
-  back?: string | (() => void);
+  back?: string | (() => void) | true;
   right?: ReactNode;
 }) {
   const navigate = useNavigate();

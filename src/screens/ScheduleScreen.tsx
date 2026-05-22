@@ -15,6 +15,22 @@ import { recents } from "../lib/favorites";
 import { dayKey } from "../lib/time";
 import { staggerContainer, listItem } from "../lib/animations";
 
+const VIEW_MODE_KEY = "akc:schedule-view-mode";
+
+function getSavedViewMode(): "list" | "timeline" {
+  try {
+    const raw = localStorage.getItem(VIEW_MODE_KEY);
+    if (raw === "timeline") return "timeline";
+  } catch { /* localStorage unavailable */ }
+  return "list";
+}
+
+function saveViewMode(mode: "list" | "timeline") {
+  try {
+    localStorage.setItem(VIEW_MODE_KEY, mode);
+  } catch { /* localStorage unavailable */ }
+}
+
 type ViewMode = "list" | "timeline";
 
 export function ScheduleScreen() {
@@ -34,7 +50,7 @@ export function ScheduleScreen() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [cats, setCats] = useState<Set<number>>(new Set());
   const [rooms, setRooms] = useState<Set<number>>(new Set());
-  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [viewMode, setViewMode] = useState<ViewMode>(() => getSavedViewMode());
 
   const toggle = (set: Set<number>, id: number) => {
     const next = new Set(set);
@@ -68,7 +84,11 @@ export function ScheduleScreen() {
         right={
           <div className="flex items-center gap-1">
             <button
-              onClick={() => setViewMode((v) => (v === "list" ? "timeline" : "list"))}
+              onClick={() => setViewMode((v) => {
+                const next = v === "list" ? "timeline" : "list";
+                saveViewMode(next);
+                return next;
+              })}
               className="relative flex h-9 w-9 items-center justify-center rounded-full text-ink-soft active:bg-bg-card"
               aria-label={viewToggleLabel}
               title={viewToggleLabel}
