@@ -6,6 +6,7 @@ import { useLayout } from "../components/EventLayout";
 import { SlotCard } from "../components/SlotCard";
 import { ScrollToTop } from "../components/ScrollToTop";
 import { TopBar } from "../components/TopBar";
+import { ThemeSwitcher } from "../components/ThemeSwitcher";
 import { EmptyState } from "../components/EmptyState";
 import { useNow } from "../hooks/useNow";
 import { recents } from "../lib/favorites";
@@ -33,7 +34,7 @@ export function NowNextScreen() {
 
   return (
     <>
-      <TopBar title={title} subtitle="Happening now" back="/" />
+      <TopBar title={title} subtitle="Happening now" back="/" right={<ThemeSwitcher />} />
       <main className="space-y-6 px-4 py-4">
         <motion.section variants={fadeUp} initial="initial" whileInView="animate" viewport={{ once: true }}>
           <SectionHeader title="Now" badge={live.length || undefined} />

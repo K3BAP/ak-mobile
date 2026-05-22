@@ -9,6 +9,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { discoverEvents } from "../lib/events";
 import { recents } from "../lib/favorites";
 import { pageTransition, listItem } from "../lib/animations";
+import { ThemeSwitcher } from "../components/ThemeSwitcher";
 
 export function EventsScreen() {
   const { data, loading, error } = useResource("events", (signal) =>
@@ -34,7 +35,12 @@ export function EventsScreen() {
     <motion.div className="mx-auto min-h-dvh max-w-screen-sm" {...pageTransition}>
       <header className="safe-top px-5 pb-2 pt-8">
         <p className="text-sm font-medium text-accent">AK Companion</p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight">Choose an event</h1>
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <h1 className="text-3xl font-bold tracking-tight">Choose an event</h1>
+          <div className="-mr-1 shrink-0">
+            <ThemeSwitcher />
+          </div>
+        </div>
         <p className="mt-1 text-sm text-ink-faint">
           A clean, mobile view of the KIF AK schedule.
         </p>

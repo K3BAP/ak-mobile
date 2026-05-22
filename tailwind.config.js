@@ -5,20 +5,20 @@ export default {
     extend: {
       colors: {
         bg: {
-          DEFAULT: "#0b0d10",
-          soft: "#13161b",
-          card: "#181c22",
-          elevated: "#1f242c",
+          DEFAULT: "rgb(var(--c-bg) / <alpha-value>)",
+          soft: "rgb(var(--c-bg-soft) / <alpha-value>)",
+          card: "rgb(var(--c-bg-card) / <alpha-value>)",
+          elevated: "rgb(var(--c-bg-elevated) / <alpha-value>)",
         },
-        line: "#272d36",
+        line: "rgb(var(--c-line) / <alpha-value>)",
         ink: {
-          DEFAULT: "#f4f6f9",
-          soft: "#aab2bf",
-          faint: "#6b7480",
+          DEFAULT: "rgb(var(--c-ink) / <alpha-value>)",
+          soft: "rgb(var(--c-ink-soft) / <alpha-value>)",
+          faint: "rgb(var(--c-ink-faint) / <alpha-value>)",
         },
         accent: {
-          DEFAULT: "#3aa7d0",
-          soft: "#2b7e9e",
+          DEFAULT: "rgb(var(--c-accent) / <alpha-value>)",
+          soft: "rgb(var(--c-accent-soft) / <alpha-value>)",
         },
       },
       fontFamily: {
@@ -34,7 +34,7 @@ export default {
       },
       boxShadow: {
         soft: "0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -12px rgba(0,0,0,0.6)",
-        glow: "0 0 0 1px rgba(58,167,208,0.4), 0 8px 30px -8px rgba(58,167,208,0.35)",
+        glow: "0 0 0 1px rgb(var(--c-accent) / 0.4), 0 8px 30px -8px rgb(var(--c-accent) / 0.35)",
       },
       borderRadius: {
         xl2: "1.25rem",

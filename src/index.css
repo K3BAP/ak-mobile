@@ -2,8 +2,134 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* ── Themes ──────────────────────────────────────────────────────────
+   Colors are stored as space-separated RGB channels so Tailwind's
+   `/<alpha-value>` opacity modifiers keep working (e.g. bg-bg/80). */
+:root,
+[data-theme="dark"] {
   color-scheme: dark;
+  --c-bg: 11 13 16;
+  --c-bg-soft: 19 22 27;
+  --c-bg-card: 24 28 34;
+  --c-bg-elevated: 31 36 44;
+  --c-line: 39 45 54;
+  --c-ink: 244 246 249;
+  --c-ink-soft: 170 178 191;
+  --c-ink-faint: 107 116 128;
+  --c-accent: 58 167 208;
+  --c-accent-soft: 43 126 158;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --c-bg: 247 248 250;
+  --c-bg-soft: 237 240 244;
+  --c-bg-card: 255 255 255;
+  --c-bg-elevated: 241 244 248;
+  --c-line: 216 221 228;
+  --c-ink: 17 21 27;
+  --c-ink-soft: 74 83 95;
+  --c-ink-faint: 135 144 156;
+  --c-accent: 22 132 178;
+  --c-accent-soft: 16 105 143;
+}
+
+[data-theme="cyberpunk"] {
+  color-scheme: dark;
+  --c-bg: 9 5 20;
+  --c-bg-soft: 16 9 33;
+  --c-bg-card: 23 14 44;
+  --c-bg-elevated: 33 21 60;
+  --c-line: 60 33 96;
+  --c-ink: 245 233 255;
+  --c-ink-soft: 197 167 233;
+  --c-ink-faint: 140 108 180;
+  --c-accent: 255 43 214;
+  --c-accent-soft: 0 224 255;
+}
+
+[data-theme="christmas"] {
+  color-scheme: dark;
+  --c-bg: 12 22 16;
+  --c-bg-soft: 16 32 23;
+  --c-bg-card: 20 40 28;
+  --c-bg-elevated: 27 52 37;
+  --c-line: 36 74 53;
+  --c-ink: 243 250 245;
+  --c-ink-soft: 184 213 194;
+  --c-ink-faint: 124 166 141;
+  --c-accent: 230 57 70;
+  --c-accent-soft: 47 158 90;
+}
+
+[data-theme="sunset"] {
+  color-scheme: dark;
+  --c-bg: 26 14 30;
+  --c-bg-soft: 38 19 44;
+  --c-bg-card: 49 25 57;
+  --c-bg-elevated: 63 33 72;
+  --c-line: 84 44 95;
+  --c-ink: 255 240 235;
+  --c-ink-soft: 230 184 198;
+  --c-ink-faint: 176 124 142;
+  --c-accent: 255 126 95;
+  --c-accent-soft: 254 180 123;
+}
+
+[data-theme="forest"] {
+  color-scheme: dark;
+  --c-bg: 14 20 17;
+  --c-bg-soft: 19 28 23;
+  --c-bg-card: 25 37 30;
+  --c-bg-elevated: 33 48 39;
+  --c-line: 45 64 51;
+  --c-ink: 238 246 240;
+  --c-ink-soft: 178 200 184;
+  --c-ink-faint: 124 150 132;
+  --c-accent: 124 198 110;
+  --c-accent-soft: 90 158 80;
+}
+
+[data-theme="ocean"] {
+  color-scheme: dark;
+  --c-bg: 8 17 31;
+  --c-bg-soft: 12 25 44;
+  --c-bg-card: 16 33 58;
+  --c-bg-elevated: 23 45 76;
+  --c-line: 33 61 98;
+  --c-ink: 233 243 255;
+  --c-ink-soft: 168 195 224;
+  --c-ink-faint: 110 140 175;
+  --c-accent: 56 189 248;
+  --c-accent-soft: 34 140 196;
+}
+
+[data-theme="halloween"] {
+  color-scheme: dark;
+  --c-bg: 17 11 6;
+  --c-bg-soft: 26 16 9;
+  --c-bg-card: 35 21 12;
+  --c-bg-elevated: 46 28 16;
+  --c-line: 64 39 22;
+  --c-ink: 250 240 230;
+  --c-ink-soft: 214 178 146;
+  --c-ink-faint: 162 124 92;
+  --c-accent: 255 138 24;
+  --c-accent-soft: 138 92 196;
+}
+
+[data-theme="sakura"] {
+  color-scheme: light;
+  --c-bg: 255 245 248;
+  --c-bg-soft: 252 235 241;
+  --c-bg-card: 255 255 255;
+  --c-bg-elevated: 253 238 244;
+  --c-line: 244 209 222;
+  --c-ink: 60 30 44;
+  --c-ink-soft: 122 80 98;
+  --c-ink-faint: 178 135 154;
+  --c-accent: 233 84 142;
+  --c-accent-soft: 198 64 118;
 }
 
 html,
