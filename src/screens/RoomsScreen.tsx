@@ -11,7 +11,7 @@ import { useNow } from "../hooks/useNow";
 import { recents } from "../lib/favorites";
 import { dayLabelParts } from "../lib/time";
 import type { ResolvedSlot } from "../lib/types";
-import { staggerContainer, listItem, springConfig } from "../lib/animations";
+import { listItem, springConfig } from "../lib/animations";
 
 export function RoomsScreen() {
   const { slug, data } = useEvent();
@@ -44,19 +44,18 @@ export function RoomsScreen() {
         {rooms.length === 0 ? (
           <EmptyState icon={DoorOpen} title="No rooms listed" />
         ) : (
-          <motion.div
-            className="space-y-3"
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
-          >
-            {rooms.map((room) => {
+          <div className="space-y-3">
+            {rooms.map((room, index) => {
               const slots = byRoom.get(room.id) ?? [];
               const open = openId === room.id;
               return (
                 <motion.div
                   key={room.id}
                   variants={listItem}
+                  custom={index}
+                  initial="initial"
+                  whileInView="animate"
+                  viewport={{ once: true }}
                   className="overflow-hidden rounded-2xl border border-line bg-bg-card shadow-soft"
                 >
                   <button
@@ -137,7 +136,7 @@ export function RoomsScreen() {
                 </motion.div>
               );
             })}
-          </motion.div>
+           </div>
         )}
       </main>
       <ScrollToTop scrollContainerRef={scrollRef} />

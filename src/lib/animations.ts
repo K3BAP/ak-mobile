@@ -18,23 +18,14 @@ export const pageTransition = {
   exit: { opacity: 0, y: -8, scale: 0.98, transition: { duration: 0.2 } },
 };
 
-export const staggerContainer: Variants = {
-  animate: {
-    transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.05,
-    },
-  },
-};
-
 export const listItem: Variants = {
   initial: { opacity: 0, y: 16, scale: 0.97 },
-  animate: {
+  animate: (i: number = 0) => ({
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { ...springConfig, duration: undefined },
-  },
+    transition: { ...springConfig, delay: Math.min(i * 0.06, 0.36) },
+  }),
   exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
 };
 

@@ -8,7 +8,7 @@ import { useResource } from "../hooks/useResource";
 import { useDebounce } from "../hooks/useDebounce";
 import { discoverEvents } from "../lib/events";
 import { recents } from "../lib/favorites";
-import { pageTransition, staggerContainer, listItem } from "../lib/animations";
+import { pageTransition, listItem } from "../lib/animations";
 
 export function EventsScreen() {
   const { data, loading, error } = useResource("events", (signal) =>
@@ -87,14 +87,9 @@ export function EventsScreen() {
           <EmptyState icon={Search} title="No matching events" />
         )}
 
-        <motion.div
-          className="space-y-3"
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-        >
-          {filtered.map((ev) => (
-            <motion.div key={ev.slug} variants={listItem}>
+        <div className="space-y-3">
+          {filtered.map((ev, index) => (
+            <motion.div key={ev.slug} variants={listItem} custom={index} initial="initial" whileInView="animate" viewport={{ once: true }}>
               <Link
                 to={`/${ev.slug}/now`}
                 onClick={() => recents.push({ slug: ev.slug, name: ev.name })}
@@ -123,8 +118,8 @@ export function EventsScreen() {
                 <ChevronRight className="h-5 w-5 shrink-0 text-ink-faint" />
               </Link>
             </motion.div>
-          ))}
-        </motion.div>
+))}
+        </div>
 
         <footer className="space-y-2 px-1 pt-6 text-center text-xs text-ink-faint">
           <p>

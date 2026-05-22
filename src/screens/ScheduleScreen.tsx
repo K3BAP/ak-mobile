@@ -13,7 +13,7 @@ import { EmptyState } from "../components/EmptyState";
 import { useNow } from "../hooks/useNow";
 import { recents } from "../lib/favorites";
 import { dayKey } from "../lib/time";
-import { staggerContainer, listItem } from "../lib/animations";
+import { listItem } from "../lib/animations";
 
 const VIEW_MODE_KEY = "akc:schedule-view-mode";
 
@@ -143,15 +143,9 @@ export function ScheduleScreen() {
             scrollContainerRef={scrollRef}
           />
         ) : (
-          <motion.div
-            className="space-y-3"
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
-            key={activeDay}
-          >
-            {slots.map((rs) => (
-              <motion.div key={rs.slot.id} variants={listItem}>
+          <div className="space-y-3" key={activeDay}>
+            {slots.map((rs, index) => (
+              <motion.div key={rs.slot.id} variants={listItem} custom={index} initial="initial" whileInView="animate" viewport={{ once: true }}>
                 <SlotCard
                   slug={slug}
                   rs={rs}
@@ -159,8 +153,8 @@ export function ScheduleScreen() {
                   now={now}
                 />
               </motion.div>
-            ))}
-          </motion.div>
+))}
+           </div>
         )}
       </main>
 

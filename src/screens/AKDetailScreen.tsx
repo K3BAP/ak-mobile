@@ -8,7 +8,7 @@ import { TopBar } from "../components/TopBar";
 import { EmptyState } from "../components/EmptyState";
 import { accent } from "../lib/color";
 import { dayLabelParts, rangeLabel } from "../lib/time";
-import { staggerContainer, fadeUp } from "../lib/animations";
+import { fadeUp } from "../lib/animations";
 
 export function AKDetailScreen() {
   const { slug, data } = useEvent();
@@ -43,7 +43,8 @@ export function AKDetailScreen() {
           style={{ borderLeft: `4px solid ${accent(category?.color)}` }}
           variants={fadeUp}
           initial="initial"
-          animate="animate"
+          whileInView="animate"
+          viewport={{ once: true }}
         >
           <div className="mb-2 flex flex-wrap items-center gap-2">
             {category && <CategoryPill name={category.name} color={category.color} />}
@@ -77,22 +78,21 @@ export function AKDetailScreen() {
           )}
         </motion.div>
 
-        <motion.div
-          className="space-y-5"
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-        >
+        <div className="space-y-5">
           {slots.length > 0 && (
             <Section icon={CalendarClock} title="Scheduled">
-              <motion.div className="space-y-2" variants={staggerContainer}>
-                {slots.map((rs) => {
+              <div className="space-y-2">
+                {slots.map((rs, index) => {
                   const p = dayLabelParts(rs.start, offset);
                   return (
                     <motion.div
                       key={rs.slot.id}
                       className="flex items-center justify-between rounded-xl border border-line bg-bg-card px-3 py-2.5"
                       variants={fadeUp}
+                      custom={index}
+                      initial="initial"
+                      whileInView="animate"
+                      viewport={{ once: true }}
                     >
                       <div>
                         <p className="text-sm font-semibold">
@@ -111,7 +111,7 @@ export function AKDetailScreen() {
                     </motion.div>
                   );
                 })}
-              </motion.div>
+              </div>
             </Section>
           )}
 
@@ -120,6 +120,9 @@ export function AKDetailScreen() {
               <motion.p
                 className="whitespace-pre-line text-[15px] leading-relaxed text-ink-soft"
                 variants={fadeUp}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
               >
                 {ak.description}
               </motion.p>
@@ -131,6 +134,9 @@ export function AKDetailScreen() {
               <motion.p
                 className="whitespace-pre-line text-[15px] leading-relaxed text-ink-soft"
                 variants={fadeUp}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
               >
                 {ak.goal}
               </motion.p>
@@ -142,6 +148,9 @@ export function AKDetailScreen() {
               <motion.p
                 className="whitespace-pre-line text-[15px] leading-relaxed text-ink-soft"
                 variants={fadeUp}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
               >
                 {ak.info}
               </motion.p>
@@ -149,12 +158,12 @@ export function AKDetailScreen() {
           )}
 
           {(ak.link || ak.protocol_link) && (
-            <motion.div className="mt-5 space-y-2" variants={staggerContainer}>
+            <div className="mt-5 space-y-2">
               {ak.link && <LinkRow href={ak.link} label="Wiki / details" />}
               {ak.protocol_link && <LinkRow href={ak.protocol_link} label="Protocol" />}
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+        </div>
       </main>
     </>
   );

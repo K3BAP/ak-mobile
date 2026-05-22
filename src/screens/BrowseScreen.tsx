@@ -12,7 +12,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { recents } from "../lib/favorites";
 import { readable, tint } from "../lib/color";
 import { formatTime } from "../lib/time";
-import { staggerContainer, listItem } from "../lib/animations";
+import { listItem } from "../lib/animations";
 
 export function BrowseScreen() {
   const { slug, data } = useEvent();
@@ -87,17 +87,11 @@ export function BrowseScreen() {
         {results.length === 0 ? (
           <EmptyState icon={SearchX} title="No AKs found" hint="Try a different search." />
         ) : (
-          <motion.div
-            className="space-y-3"
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
-            key={activeCat}
-          >
-            {results.map((ak) => {
+          <div className="space-y-3" key={activeCat}>
+            {results.map((ak, index) => {
               const sched = data.slotsByAk.get(ak.id)?.[0];
               return (
-                <motion.div key={ak.id} variants={listItem}>
+                <motion.div key={ak.id} variants={listItem} custom={index} initial="initial" whileInView="animate" viewport={{ once: true }}>
                   <AKCard
                     slug={slug}
                     ak={ak}
@@ -117,7 +111,7 @@ export function BrowseScreen() {
                 </motion.div>
               );
             })}
-          </motion.div>
+          </div>
         )}
       </main>
       <ScrollToTop scrollContainerRef={scrollRef} />
