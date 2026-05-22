@@ -83,3 +83,7 @@ export function relativeLabel(target: Date, now: Date): string {
 export function overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date): boolean {
   return aStart < bEnd && bStart < aEnd;
 }
+
+export function minutesBetween(a: Date, b: Date): number {
+  return (b.getTime() - a.getTime()) / 60000;
+}

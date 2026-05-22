@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import { CalendarX, SlidersHorizontal } from "lucide-react";
+import { CalendarX, LayoutGrid, List, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useEvent } from "../EventContext";
 import { useLayout } from "../components/EventLayout";
 import { DayTabs } from "../components/DayTabs";
 import { FilterSheet } from "../components/FilterSheet";
 import { SlotCard } from "../components/SlotCard";
+import { TimelineView } from "../components/TimelineView";
 import { ScrollToTop } from "../components/ScrollToTop";
 import { TopBar } from "../components/TopBar";
 import { EmptyState } from "../components/EmptyState";
@@ -13,6 +14,8 @@ import { useNow } from "../hooks/useNow";
 import { recents } from "../lib/favorites";
 import { dayKey } from "../lib/time";
 import { staggerContainer, listItem } from "../lib/animations";
+
+type ViewMode = "list" | "timeline";
 
 export function ScheduleScreen() {
   const { slug, data } = useEvent();
@@ -31,6 +34,7 @@ export function ScheduleScreen() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [cats, setCats] = useState<Set<number>>(new Set());
   const [rooms, setRooms] = useState<Set<number>>(new Set());
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
 
   const toggle = (set: Set<number>, id: number) => {
     const next = new Set(set);
@@ -52,6 +56,9 @@ export function ScheduleScreen() {
     });
   }, [day, cats, rooms]);
 
+  const ViewToggleIcon = viewMode === "list" ? LayoutGrid : List;
+  const viewToggleLabel = viewMode === "list" ? "Timeline view" : "List view";
+
   return (
     <>
       <TopBar
@@ -59,18 +66,29 @@ export function ScheduleScreen() {
         subtitle={title}
         back="/"
         right={
-          <button
-            onClick={() => setFilterOpen(true)}
-            className="relative flex h-9 w-9 items-center justify-center rounded-full text-ink-soft active:bg-bg-card"
-            aria-label="Filters"
-          >
-            <SlidersHorizontal className="h-5 w-5" />
-            {filterCount > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-bg">
-                {filterCount}
-              </span>
-            )}
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setViewMode((v) => (v === "list" ? "timeline" : "list"))}
+              className="relative flex h-9 w-9 items-center justify-center rounded-full text-ink-soft active:bg-bg-card"
+              aria-label={viewToggleLabel}
+              title={viewToggleLabel}
+            >
+              <ViewToggleIcon className="h-5 w-5" />
+            </button>
+            <button
+              onClick={() => setFilterOpen(true)}
+              className="relative flex h-9 w-9 items-center justify-center rounded-full text-ink-soft active:bg-bg-card"
+              aria-label="Filters"
+              title="Filters"
+            >
+              <SlidersHorizontal className="h-5 w-5" />
+              {filterCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-bg">
+                  {filterCount}
+                </span>
+              )}
+            </button>
+          </div>
         }
       />
 
@@ -83,7 +101,7 @@ export function ScheduleScreen() {
         />
       </div>
 
-      <main className="space-y-3 px-4 py-4">
+      <main className="px-4 py-4">
         {data.days.length === 0 ? (
           <EmptyState
             icon={CalendarX}
@@ -95,6 +113,14 @@ export function ScheduleScreen() {
             icon={CalendarX}
             title="Nothing matches"
             hint={filterCount ? "Try clearing some filters." : "No sessions this day."}
+          />
+        ) : viewMode === "timeline" ? (
+          <TimelineView
+            slots={slots}
+            offsetMinutes={offset}
+            slug={slug}
+            now={now}
+            scrollContainerRef={scrollRef}
           />
         ) : (
           <motion.div
