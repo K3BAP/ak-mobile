@@ -52,31 +52,29 @@ relative `/ak/...` prefix:
 
 ### Deploying on Vercel
 
-`vercel.json` + a tiny serverless function wire this up — no env vars needed:
+A serverless function does the proxying — no env vars needed:
+
+- [`api/proxy.js`](api/proxy.js) fetches `?path=<path>` from `https://ak.kif.rocks` and
+  streams the response back (following the upstream's DRF trailing-slash 301s). The browser
+  only ever talks to your own origin, so CORS never applies.
+- In production the client calls this function **directly** as `/api/proxy?path=…`
+  (see [`src/lib/api.ts`](src/lib/api.ts)); in dev it uses Vite's `/ak` server proxy instead.
+- `vercel.json` only needs the SPA fallback so deep links (e.g. `/kif540/schedule`) resolve
+  to `index.html`.
 
 ```json
 {
-  "rewrites": [
-    { "source": "/ak/:path*", "destination": "/api/proxy?path=:path*" },
-    { "source": "/:path*", "destination": "/index.html" }
-  ]
+  "rewrites": [{ "source": "/:path*", "destination": "/index.html" }]
 }
 ```
 
-- The first rewrite sends `/ak/*` to the serverless function in [`api/proxy.js`](api/proxy.js),
-  which fetches the matching path from `https://ak.kif.rocks` and streams the response back.
-  The browser only ever talks to your own origin, so CORS never applies.
-- The second is the SPA fallback for client-side routes (deep links like
-  `/kif540/schedule`). Static assets in `dist/` and the `/api/*` function are resolved by
-  Vercel's filesystem before the rewrites run, so they're untouched.
+> Heads-up: a `vercel.json` rewrite that maps `/ak/* → https://ak.kif.rocks/*` (or to the
+> function) is the "obvious" approach and is valid syntax, but on this project Vercel
+> **ignored the rewrite** and `/ak/*` returned `NOT_FOUND`. Calling the function directly
+> sidesteps that entirely and is verified working in production.
 
-> A plain external rewrite (`destination: "https://ak.kif.rocks/:path*"`) looks simpler
-> and is valid syntax, but proxying to this particular upstream returned a Vercel
-> `NOT_FOUND` in practice. The function is the dependable approach and also follows the
-> upstream's trailing-slash redirects (DRF 301s `/…/api/ak` → `/…/api/ak/`).
-
-Project settings on Vercel: framework preset **Vite**, and set **Root Directory** to the
-folder containing this app if it lives in a subfolder of the repo.
+Project settings on Vercel: framework preset **Vite**, with the **Root Directory** set to
+the folder that contains `vercel.json` and `api/`.
 
 ## Data notes
 
