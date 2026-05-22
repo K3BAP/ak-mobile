@@ -50,6 +50,27 @@ relative `/ak/...` prefix:
   upstream (or host it on the same origin). Override the prefix with the `VITE_API_BASE`
   env var if you mount it elsewhere.
 
+### Deploying on Vercel
+
+`vercel.json` already wires this up — no env vars needed:
+
+```json
+{
+  "rewrites": [
+    { "source": "/ak/:path*", "destination": "https://ak.kif.rocks/:path*" },
+    { "source": "/:path*", "destination": "/index.html" }
+  ]
+}
+```
+
+The first rewrite makes Vercel proxy `/ak/*` to the upstream **server-side**, so the
+browser only ever talks to your own origin and CORS never applies. The second is the
+SPA fallback for client-side routes (deep links like `/kif540/schedule`); static assets
+in `dist/` are served by Vercel's filesystem before rewrites run, so they're untouched.
+
+Project settings on Vercel: framework preset **Vite**, and set **Root Directory** to
+`ak-companion` if this lives in a subfolder of the repo.
+
 ## Data notes
 
 - The app is **read-only**. Submission and preference polls require session+CSRF auth
