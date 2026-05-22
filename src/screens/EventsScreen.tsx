@@ -1,4 +1,4 @@
-import { CalendarRange, ChevronRight, Clock, MapPin, Search } from "lucide-react";
+import { CalendarRange, ChevronRight, Clock, Github, MapPin, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { CardListSkeleton } from "../components/Skeleton";
@@ -113,6 +113,32 @@ export function EventsScreen() {
             <ChevronRight className="h-5 w-5 shrink-0 text-ink-faint" />
           </Link>
         ))}
+
+        <footer className="space-y-2 px-1 pt-6 text-center text-xs text-ink-faint">
+          <p>
+            Open source ·{" "}
+            <a
+              href="https://github.com/K3BAP/ak-mobile"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-accent"
+            >
+              <Github className="h-3.5 w-3.5" />
+              K3BAP/ak-mobile
+            </a>
+          </p>
+          <p>
+            Data from the official{" "}
+            <a
+              href="https://ak.kif.rocks/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-accent"
+            >
+              ak.kif.rocks
+            </a>
+          </p>
+        </footer>
       </main>
     </div>
   );
