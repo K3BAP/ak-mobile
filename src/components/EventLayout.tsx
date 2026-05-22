@@ -43,7 +43,7 @@ export function EventLayout() {
 
   if (loading || !data) {
     return (
-      <div className="min-h-dvh">
+      <div className="h-dvh">
         <OfflineBanner online={online} lastUpdated={lastUpdated} />
         <TopBar title={slug} back="/" />
         <main className="px-4 py-4">
@@ -74,7 +74,7 @@ export function EventLayout() {
       <LayoutContext.Provider value={{ scrollRef }}>
         <OfflineBanner online={online} lastUpdated={lastUpdated} />
         <motion.div
-          className="mx-auto min-h-dvh max-w-screen-sm pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
+          className="mx-auto flex h-dvh max-w-screen-sm flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
           {...pageTransition}
         >
           <PullToRefresh onRefresh={handleRefresh} scrollRef={scrollRef}>

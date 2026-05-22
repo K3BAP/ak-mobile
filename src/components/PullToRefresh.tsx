@@ -120,7 +120,7 @@ export function PullToRefresh({ onRefresh, scrollRef, children }: Props) {
   return (
     <div
       ref={scrollRef}
-      className="relative h-full overflow-y-auto"
+      className="relative flex-1 overflow-y-auto"
     >
       <AnimatePresence>
         {(pulling || refreshing) && (
