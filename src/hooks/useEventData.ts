@@ -9,7 +9,7 @@ import type {
   Room,
   Track,
 } from "../lib/types";
-import { dayKey, parseDurationHours, parseOffsetMinutes } from "../lib/time";
+import { dayKey, parseDurationHours, venueOffsetMinutes } from "../lib/time";
 import { useResource } from "./useResource";
 
 export interface EventBundle {
@@ -67,7 +67,9 @@ export function useEventData(slug: string | null) {
     const ownerById = new Map(owners.map((o) => [o.id, o]));
 
     const scheduled = slots.filter((s) => s.start);
-    const offsetMinutes = scheduled.length ? parseOffsetMinutes(scheduled[0].start) : 0;
+    const offsetMinutes = scheduled.length
+      ? venueOffsetMinutes(new Date(scheduled[0].start))
+      : 0;
 
     const resolvedSlots: ResolvedSlot[] = scheduled
       .map((slot) => {

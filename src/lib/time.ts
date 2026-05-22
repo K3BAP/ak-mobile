@@ -1,13 +1,38 @@
-// Times come from the API as ISO strings carrying the venue's UTC offset, e.g.
-// "2026-05-22T08:00:00+02:00". We always render the *venue* wall-clock time
-// regardless of the device timezone, by shifting the absolute instant by the
-// venue offset and reading the UTC fields.
+// The API returns each slot's start as an absolute instant — sometimes with the
+// venue offset ("...+02:00"), sometimes in UTC ("...Z"). Either way `new Date()`
+// parses it to the correct instant. We always render the *venue* wall-clock time
+// (regardless of the device timezone) by shifting the instant by the venue's
+// offset and reading the UTC fields.
+//
+// KIF takes place in Central Europe, so the venue zone is Europe/Berlin. We derive
+// the offset from the IANA zone (DST-aware) rather than trusting the ISO string,
+// which is robust to the server emitting either UTC or a fixed offset.
+export const VENUE_TZ = "Europe/Berlin";
 
-export function parseOffsetMinutes(iso: string): number {
-  const m = iso.match(/([+-])(\d{2}):(\d{2})$/);
-  if (!m) return 0; // 'Z' or naive -> treat as UTC
-  const sign = m[1] === "-" ? -1 : 1;
-  return sign * (parseInt(m[2], 10) * 60 + parseInt(m[3], 10));
+// Offset (in minutes) of `timeZone` at the given instant, e.g. +120 for CEST.
+export function venueOffsetMinutes(instant: Date, timeZone: string = VENUE_TZ): number {
+  const dtf = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  const p: Record<string, string> = {};
+  for (const part of dtf.formatToParts(instant)) p[part.type] = part.value;
+  const hour = p.hour === "24" ? 0 : Number(p.hour);
+  const asUTC = Date.UTC(
+    Number(p.year),
+    Number(p.month) - 1,
+    Number(p.day),
+    hour,
+    Number(p.minute),
+    Number(p.second),
+  );
+  return Math.round((asUTC - instant.getTime()) / 60000);
 }
 
 export function parseDurationHours(duration: string): number {
