@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { CalendarX, LayoutGrid, List, SlidersHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useEvent } from "../EventContext";
 import { useLayout } from "../components/EventLayout";
 import { DayTabs } from "../components/DayTabs";
@@ -71,6 +71,34 @@ export function ScheduleScreen() {
       return true;
     });
   }, [day, cats, rooms]);
+
+  // index of the current/next slot in the list (first that hasn't ended yet)
+  const nowSlotIndex = useMemo(() => {
+    if (activeDay !== todayKey) return -1;
+    return slots.findIndex((rs) => rs.end > now);
+  }, [slots, activeDay, todayKey, now]);
+
+  const nowSlotRef = useRef<HTMLDivElement>(null);
+
+  // auto-scroll the list to the current/next slot on mount / day change
+  useEffect(() => {
+    if (viewMode !== "list" || nowSlotIndex < 0 || !nowSlotRef.current) return;
+    const el = nowSlotRef.current;
+    const container = scrollRef?.current;
+    if (container) {
+      const elRect = el.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const targetTop =
+        container.scrollTop +
+        elRect.top -
+        containerRect.top -
+        containerRect.height / 3;
+      container.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
+    } else {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewMode, activeDay, nowSlotIndex >= 0]);
 
   const ViewToggleIcon = viewMode === "list" ? LayoutGrid : List;
   const viewToggleLabel = viewMode === "list" ? "Timeline view" : "List view";
@@ -145,7 +173,7 @@ export function ScheduleScreen() {
         ) : (
           <div className="space-y-3" key={activeDay}>
             {slots.map((rs, index) => (
-              <motion.div key={rs.slot.id} variants={listItem} custom={index} initial="initial" whileInView="animate" viewport={{ once: true }}>
+              <motion.div key={rs.slot.id} ref={index === nowSlotIndex ? nowSlotRef : undefined} variants={listItem} custom={index} initial="initial" whileInView="animate" viewport={{ once: true }}>
                 <SlotCard
                   slug={slug}
                   rs={rs}

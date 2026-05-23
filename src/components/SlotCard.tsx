@@ -21,6 +21,7 @@ export function SlotCard({
   showRoom?: boolean;
 }) {
   const live = now ? rs.start <= now && now < rs.end : false;
+  const past = now ? rs.end <= now : false;
   const title = rs.ak?.name ?? "Reserved";
   const color = accent(rs.category?.color);
   const inner = (
@@ -66,9 +67,9 @@ export function SlotCard({
     </>
   );
 
-  const className = `flex items-start gap-3 rounded-2xl border bg-bg-card p-3 shadow-soft ${
+  const className = `flex items-start gap-3 rounded-2xl border bg-bg-card p-3 shadow-soft transition-opacity ${
     live ? "border-emerald-500/40" : "border-line"
-  }`;
+  } ${past ? "opacity-50" : ""}`;
 
   if (rs.ak) {
     return (

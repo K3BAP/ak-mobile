@@ -16,6 +16,7 @@ interface Props {
 
 export function TimelineSlot({ slug, rs, offsetMinutes, now, isFavorited, style }: Props) {
   const live = now ? rs.start <= now && now < rs.end : false;
+  const past = now ? rs.end <= now : false;
   const title = rs.ak?.name ?? "Reserved";
   const color = accent(rs.category?.color);
 
@@ -65,7 +66,8 @@ export function TimelineSlot({ slug, rs, offsetMinutes, now, isFavorited, style 
       : isFavorited
         ? "border-amber-500/30 "
         : "border-line ") +
-    (isFavorited ? "bg-amber-500/[0.04] " : "bg-bg-card ");
+    (isFavorited ? "bg-amber-500/[0.04] " : "bg-bg-card ") +
+    (past ? "opacity-50 " : "");
 
   if (rs.ak) {
     return (
