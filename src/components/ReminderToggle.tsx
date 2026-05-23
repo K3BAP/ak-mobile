@@ -49,13 +49,13 @@ export function ReminderToggle() {
           role="switch"
           aria-checked={enabled}
           onClick={handleToggle}
-          className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+          className={`relative h-6 w-11 shrink-0 rounded-full p-0 transition-colors ${
             enabled ? "bg-accent" : "bg-bg-elevated"
           }`}
         >
           <span
-            className={`absolute top-0.5 h-5 w-5 rounded-full bg-bg transition-transform ${
-              enabled ? "translate-x-[1.375rem]" : "translate-x-0.5"
+            className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-bg transition-transform ${
+              enabled ? "translate-x-5" : "translate-x-0"
             }`}
           />
         </button>
