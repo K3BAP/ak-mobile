@@ -256,8 +256,8 @@
    at the top-left like light bending through a glass edge (Apple liquid-glass).
    Painted via a masked pseudo-element so only the 1px border shows — the centre
    stays fully transparent and lets content through. */
-:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-card,
-:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-elevated {
+:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-card:not(.absolute):not(.fixed):not(.relative):not(.sticky),
+:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-elevated:not(.absolute):not(.fixed):not(.relative):not(.sticky) {
   position: relative;
 }
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-card::after,
