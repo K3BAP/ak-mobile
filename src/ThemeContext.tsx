@@ -9,6 +9,8 @@ export interface ThemeDef {
 }
 
 export const THEMES: ThemeDef[] = [
+  { id: "liquid-dark", name: "Liquid Dark", emoji: "🌑", swatch: ["#0a0e16", "#1b2230", "#5aaaff"] },
+  { id: "liquid-glass", name: "Liquid Glass", emoji: "💧", swatch: ["#cfe6ff", "#ffffff", "#3da5ff"] },
   { id: "dark", name: "Midnight", emoji: "🌙", swatch: ["#0b0d10", "#181c22", "#3aa7d0"] },
   { id: "light", name: "Daylight", emoji: "☀️", swatch: ["#f7f8fa", "#ffffff", "#1684b2"] },
   { id: "cyberpunk", name: "Cyberpunk", emoji: "🌃", swatch: ["#090514", "#170e2c", "#ff2bd6"] },
@@ -18,12 +20,11 @@ export const THEMES: ThemeDef[] = [
   { id: "ocean", name: "Ocean", emoji: "🌊", swatch: ["#08111f", "#10213a", "#38bdf8"] },
   { id: "halloween", name: "Halloween", emoji: "🎃", swatch: ["#110b06", "#23150c", "#ff8a18"] },
   { id: "sakura", name: "Sakura", emoji: "🌸", swatch: ["#fff5f8", "#ffffff", "#e9548e"] },
-  { id: "aero", name: "Aero Glass", emoji: "🪟", swatch: ["#1b3a6b", "#dbeeff", "#3da5ff"] },
   { id: "terminal", name: "Terminal", emoji: "💻", swatch: ["#020503", "#0a140c", "#33ff66"] },
 ];
 
 const STORAGE_KEY = "ak-theme";
-const DEFAULT_THEME = "dark";
+const DEFAULT_THEME = "liquid-dark";
 
 export function readStoredTheme(): string {
   try {
