@@ -13,6 +13,8 @@ import { AKDetailScreen } from "./screens/AKDetailScreen";
 import { RoomsScreen } from "./screens/RoomsScreen";
 import { AgendaScreen } from "./screens/AgendaScreen";
 import { useStandalone } from "./hooks/useStandalone";
+import { useAppUpdate } from "./hooks/useAppUpdate";
+import { UpdateBanner } from "./components/UpdateBanner";
 
 const SKIP_KEY = "ak-skip-install";
 
@@ -44,6 +46,8 @@ export default function App() {
     () => sessionStorage.getItem(SKIP_KEY) === "1",
   );
 
+  const { needRefresh, reload } = useAppUpdate();
+
   const skipInstall = () => {
     sessionStorage.setItem(SKIP_KEY, "1");
     setSkipped(true);
@@ -53,6 +57,7 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <ThemeProvider>
         <FavoritesProvider>
+          <UpdateBanner show={needRefresh} onReload={reload} />
           {!standalone && !skipped ? (
             <InstallScreen onSkip={skipInstall} />
           ) : (
