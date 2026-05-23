@@ -9,8 +9,8 @@ export interface ThemeDef {
 }
 
 export const THEMES: ThemeDef[] = [
-  { id: "liquid-dark", name: "Liquid Dark", emoji: "🌑", swatch: ["#0a0e16", "#1b2230", "#5aaaff"] },
-  { id: "liquid-glass", name: "Liquid Glass", emoji: "💧", swatch: ["#cfe6ff", "#ffffff", "#3da5ff"] },
+  { id: "liquid-dark", name: "Liquid Dark", emoji: "🌑", swatch: ["#0a0e16", "#1b2230", "#8b7cf7"] },
+  { id: "liquid-glass", name: "Liquid Glass", emoji: "💧", swatch: ["#cfe6ff", "#ffffff", "#8b7cf7"] },
   { id: "dark", name: "Midnight", emoji: "🌙", swatch: ["#0b0d10", "#181c22", "#3aa7d0"] },
   { id: "light", name: "Daylight", emoji: "☀️", swatch: ["#f7f8fa", "#ffffff", "#1684b2"] },
   { id: "cyberpunk", name: "Cyberpunk", emoji: "🌃", swatch: ["#090514", "#170e2c", "#ff2bd6"] },

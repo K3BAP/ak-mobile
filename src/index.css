@@ -142,22 +142,24 @@
   --c-ink: 15 38 66;
   --c-ink-soft: 54 86 122;
   --c-ink-faint: 120 150 182;
-  --c-accent: 61 165 255;
-  --c-accent-soft: 30 120 215;
+  --c-accent: 139 124 247;
+  --c-accent-soft: 120 110 230;
 }
 
 [data-theme="liquid-dark"] {
   color-scheme: dark;
   --c-bg: 10 14 22;
   --c-bg-soft: 18 24 34;
-  --c-bg-card: 205 219 242;
-  --c-bg-elevated: 215 227 248;
-  --c-line: 120 140 170;
+  /* AK / surface elements: dark, Midnight-style (blue-tinted) so cards read as
+     dark glass rather than washed-out daylight panels. */
+  --c-bg-card: 22 28 40;
+  --c-bg-elevated: 31 39 54;
+  --c-line: 48 58 78;
   --c-ink: 236 243 255;
   --c-ink-soft: 178 192 216;
   --c-ink-faint: 124 142 170;
-  --c-accent: 90 170 255;
-  --c-accent-soft: 130 195 255;
+  --c-accent: 139 124 247;
+  --c-accent-soft: 165 155 255;
 }
 
 [data-theme="terminal"] {
@@ -199,36 +201,25 @@
   background-attachment: fixed;
 }
 
-/* In-flow content cards — barely-there glass, content reads straight through. */
-:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-card,
-:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-elevated {
-  background-color: rgb(var(--c-bg-card) / 0.2);
-  backdrop-filter: blur(16px) saturate(1.7);
-  -webkit-backdrop-filter: blur(16px) saturate(1.7);
-  box-shadow:
-    inset 0 1px 1px rgb(255 255 255 / 0.5),
-    0 6px 22px -10px rgb(0 0 0 / 0.35);
-}
-
 /* Floating chrome & overlays — heavy blur, very low opacity so content shines through. */
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .app-top-bar,
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .app-bottom-nav,
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .scroll-to-top,
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-soft {
-  background-color: rgb(var(--c-bg-card) / 0.1);
-  backdrop-filter: blur(24px) saturate(1.9);
-  -webkit-backdrop-filter: blur(24px) saturate(1.9);
+  background-color: rgb(255 255 255 / 0.06);
+  backdrop-filter: blur(40px) saturate(1.4);
+  -webkit-backdrop-filter: blur(40px) saturate(1.4);
   box-shadow:
-    inset 0 1px 1px rgb(255 255 255 / 0.55),
-    0 4px 24px -12px rgb(0 0 0 / 0.4);
+    inset 0 0 20px -5px rgb(255 255 255 / 0.45),
+    0 4px 24px -12px rgb(0 0 0 / 0.18);
 }
 
 /* Settings slide-up: the most transparent surface. Keep a strong blur so the
    text on the sheet stays readable over whatever shows through. */
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .rounded-t-3xl.bg-bg-soft {
-  background-color: rgb(var(--c-bg-card) / 0.06);
-  backdrop-filter: blur(26px) saturate(1.8);
-  -webkit-backdrop-filter: blur(26px) saturate(1.8);
+  background-color: rgb(255 255 255 / 0.06);
+  backdrop-filter: blur(40px) saturate(1.4);
+  -webkit-backdrop-filter: blur(40px) saturate(1.4);
 }
 
 /* Scrim behind the slide-up — kept very faint so the page reads through. */
@@ -254,16 +245,9 @@
 }
 
 /* Edge refraction: a gradient rim that follows the rounded corners, brightest
-   at the top-left like light bending through a glass edge (Apple liquid-glass).
-   Painted via a masked pseudo-element so only the 1px border shows — the centre
-   stays fully transparent and lets content through. */
-:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-card:not(.absolute):not(.fixed):not(.relative):not(.sticky),
-:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-elevated:not(.absolute):not(.fixed):not(.relative):not(.sticky) {
-  position: relative;
-}
-
-:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-card::after,
-:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .bg-bg-elevated::after,
+    at the top-left like light bending through a glass edge (Apple liquid-glass).
+    Painted via a masked pseudo-element so only the 1px border shows — the centre
+    stays fully transparent and lets content through. */
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .app-top-bar::after,
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .app-bottom-nav::after,
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .scroll-to-top::after,
@@ -291,7 +275,7 @@
 }
 
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .border-line {
-  border-color: rgb(255 255 255 / 0.3);
+  border-color: rgb(255 255 255 / 0.08);
 }
 
 /* Detached floating pills for app chrome (iOS-style) */
@@ -324,17 +308,10 @@
   border-radius: 1.5rem;
 }
 
-/* Liquid-dark: tone down bright borders / rims / highlights so they don't
-   blow out against the very dark background. */
+/* Liquid-dark: apply the same demo glass shadow values; the dark background
+    makes the subtle 0.08 surface and 0.45 edge glow read correctly. */
 [data-theme="liquid-dark"] .border-line {
-  border-color: rgb(var(--c-line) / 0.35);
-}
-
-[data-theme="liquid-dark"] .bg-bg-card,
-[data-theme="liquid-dark"] .bg-bg-elevated {
-  box-shadow:
-    inset 0 1px 1px rgb(255 255 255 / 0.12),
-    0 6px 22px -10px rgb(0 0 0 / 0.35);
+  border-color: rgb(255 255 255 / 0.08);
 }
 
 [data-theme="liquid-dark"] .app-top-bar,
@@ -342,12 +319,10 @@
 [data-theme="liquid-dark"] .scroll-to-top,
 [data-theme="liquid-dark"] .bg-bg-soft {
   box-shadow:
-    inset 0 1px 1px rgb(255 255 255 / 0.12),
-    0 4px 24px -12px rgb(0 0 0 / 0.4);
+    inset 0 0 20px -5px rgb(255 255 255 / 0.45),
+    0 4px 24px -12px rgb(0 0 0 / 0.18);
 }
 
-[data-theme="liquid-dark"] .bg-bg-card::after,
-[data-theme="liquid-dark"] .bg-bg-elevated::after,
 [data-theme="liquid-dark"] .app-top-bar::after,
 [data-theme="liquid-dark"] .app-bottom-nav::after,
 [data-theme="liquid-dark"] .rounded-t-3xl.bg-bg-soft::after {
