@@ -18,6 +18,8 @@ export const THEMES: ThemeDef[] = [
   { id: "ocean", name: "Ocean", emoji: "🌊", swatch: ["#08111f", "#10213a", "#38bdf8"] },
   { id: "halloween", name: "Halloween", emoji: "🎃", swatch: ["#110b06", "#23150c", "#ff8a18"] },
   { id: "sakura", name: "Sakura", emoji: "🌸", swatch: ["#fff5f8", "#ffffff", "#e9548e"] },
+  { id: "aero", name: "Aero Glass", emoji: "🪟", swatch: ["#1b3a6b", "#dbeeff", "#3da5ff"] },
+  { id: "terminal", name: "Terminal", emoji: "💻", swatch: ["#020503", "#0a140c", "#33ff66"] },
 ];
 
 const STORAGE_KEY = "ak-theme";
