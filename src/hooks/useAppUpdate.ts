@@ -30,5 +30,10 @@ export function useAppUpdate(): { needRefresh: boolean; reload: () => void } {
     };
   }, []);
 
-  return { needRefresh, reload: () => void updateServiceWorker(true) };
+  const reload = () => {
+    updateServiceWorker();
+    window.location.reload();
+  };
+
+  return { needRefresh, reload };
 }
