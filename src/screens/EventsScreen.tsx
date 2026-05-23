@@ -10,7 +10,7 @@ import { discoverEvents } from "../lib/events";
 import { prefetchEvent } from "../hooks/useEventData";
 import { recents } from "../lib/favorites";
 import { pageTransition, listItem } from "../lib/animations";
-import { ThemeSwitcher } from "../components/ThemeSwitcher";
+import { SettingsButton } from "../components/Settings";
 
 export function EventsScreen() {
   const { data, loading, error } = useResource("events", (signal) =>
@@ -39,7 +39,7 @@ export function EventsScreen() {
         <div className="mt-1 flex items-center justify-between gap-2">
           <h1 className="text-3xl font-bold tracking-tight">Choose an event</h1>
           <div className="-mr-1 shrink-0">
-            <ThemeSwitcher />
+            <SettingsButton />
           </div>
         </div>
         <p className="mt-1 text-sm text-ink-faint">

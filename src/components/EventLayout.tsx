@@ -5,6 +5,8 @@ import { Outlet, useParams } from "react-router-dom";
 import { EventContext } from "../EventContext";
 import { useEventData } from "../hooks/useEventData";
 import { useOnlineStatus } from "../hooks/useOnlineStatus";
+import { useAkReminders } from "../hooks/useAkReminders";
+import { useFavorites } from "../FavoritesContext";
 import { recents } from "../lib/favorites";
 import { pageTransition } from "../lib/animations";
 import { BottomNav } from "./BottomNav";
@@ -31,6 +33,9 @@ export function EventLayout() {
   const online = useOnlineStatus();
   const [lastUpdated, setLastUpdated] = useState<Date | undefined>();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { ids: favIds } = useFavorites(slug);
+
+  useAkReminders({ slug, data, favIds });
 
   useEffect(() => {
     if (data) recents.push({ slug, name: slug });

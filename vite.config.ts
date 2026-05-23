@@ -39,6 +39,8 @@ export default defineConfig({
         navigateFallback: "index.html",
         navigateFallbackDenylist: [/^\/ak\//],
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
+        // Adds the notificationclick handler for starred-AK reminders.
+        importScripts: ["sw-notifications.js"],
         // Serve event API responses from cache instantly, revalidate in the
         // background, and keep previously-viewed events available offline.
         // Matches both environments: /ak/* (dev proxy) and /api/proxy (prod).
