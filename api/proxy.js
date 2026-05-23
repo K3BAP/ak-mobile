@@ -34,8 +34,12 @@ export default async function handler(req, res) {
       "content-type",
       upstream.headers.get("content-type") || "application/octet-stream",
     );
-    // Short cache so the schedule stays reasonably fresh without hammering upstream.
-    res.setHeader("cache-control", "public, max-age=60");
+    // Short fresh window, then serve stale instantly while revalidating in the
+    // background so reloads stay fast well past the 60s mark.
+    res.setHeader(
+      "cache-control",
+      "public, max-age=60, stale-while-revalidate=86400",
+    );
     res.send(body);
   } catch (err) {
     res.status(502).json({ error: "Upstream request failed", detail: String(err) });

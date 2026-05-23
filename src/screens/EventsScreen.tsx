@@ -7,6 +7,7 @@ import { EmptyState } from "../components/EmptyState";
 import { useResource } from "../hooks/useResource";
 import { useDebounce } from "../hooks/useDebounce";
 import { discoverEvents } from "../lib/events";
+import { prefetchEvent } from "../hooks/useEventData";
 import { recents } from "../lib/favorites";
 import { pageTransition, listItem } from "../lib/animations";
 import { ThemeSwitcher } from "../components/ThemeSwitcher";
@@ -69,6 +70,8 @@ export function EventsScreen() {
                 <Link
                   key={r.slug}
                   to={`/${r.slug}/now`}
+                  onPointerEnter={() => prefetchEvent(r.slug)}
+                  onPointerDown={() => prefetchEvent(r.slug)}
                   className="inline-flex items-center gap-1.5 rounded-full border border-line bg-bg-card px-3 py-1.5 text-sm font-medium text-ink-soft active:bg-bg-elevated"
                 >
                   <Clock className="h-3.5 w-3.5 text-ink-faint" />
@@ -99,6 +102,8 @@ export function EventsScreen() {
               <Link
                 to={`/${ev.slug}/now`}
                 onClick={() => recents.push({ slug: ev.slug, name: ev.name })}
+                onPointerEnter={() => prefetchEvent(ev.slug)}
+                onPointerDown={() => prefetchEvent(ev.slug)}
                 className="flex items-center gap-3 rounded-2xl border border-line bg-bg-card p-4 shadow-soft"
               >
                 <div className="min-w-0 flex-1">

@@ -39,6 +39,22 @@ export default defineConfig({
         navigateFallback: "index.html",
         navigateFallbackDenylist: [/^\/ak\//],
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
+        // Serve event API responses from cache instantly, revalidate in the
+        // background, and keep previously-viewed events available offline.
+        // Matches both environments: /ak/* (dev proxy) and /api/proxy (prod).
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) =>
+              url.pathname.startsWith("/ak/") ||
+              url.pathname.startsWith("/api/proxy"),
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "ak-api",
+              expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
       },
       devOptions: { enabled: true },
     }),

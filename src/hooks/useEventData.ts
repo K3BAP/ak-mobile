@@ -10,7 +10,7 @@ import type {
   Track,
 } from "../lib/types";
 import { dayKey, parseDurationHours, venueOffsetMinutes } from "../lib/time";
-import { useResource } from "./useResource";
+import { seedCache, useResource } from "./useResource";
 
 export interface EventBundle {
   aks: AK[];
@@ -39,7 +39,14 @@ export interface EventData {
   days: EventDay[];
 }
 
-async function loadBundle(slug: string, signal: AbortSignal): Promise<EventBundle> {
+export function eventCacheKey(slug: string): string {
+  return `event:${slug}`;
+}
+
+export async function loadBundle(
+  slug: string,
+  signal?: AbortSignal,
+): Promise<EventBundle> {
   const [aks, slots, rooms, categories, owners, tracks] = await Promise.all([
     api.aks(slug, signal),
     api.slots(slug, signal),
@@ -51,9 +58,28 @@ async function loadBundle(slug: string, signal: AbortSignal): Promise<EventBundl
   return { aks, slots, rooms, categories, owners, tracks };
 }
 
+// Warm the shared cache for an event before the user navigates into it, so
+// EventLayout finds the bundle already resolved (or in flight) on mount.
+const inFlight = new Map<string, Promise<EventBundle>>();
+
+export function prefetchEvent(slug: string): void {
+  if (!slug) return;
+  const key = eventCacheKey(slug);
+  if (inFlight.has(key)) return;
+  const promise = loadBundle(slug)
+    .then((bundle) => {
+      seedCache(key, bundle);
+      return bundle;
+    })
+    .finally(() => {
+      inFlight.delete(key);
+    });
+  inFlight.set(key, promise);
+}
+
 export function useEventData(slug: string | null) {
   const { data, loading, error, reload } = useResource(
-    slug ? `event:${slug}` : null,
+    slug ? eventCacheKey(slug) : null,
     (signal) => loadBundle(slug as string, signal),
   );
 

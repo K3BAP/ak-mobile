@@ -9,6 +9,11 @@ interface State<T> {
 // Module-level cache so navigating between screens doesn't refetch.
 const cache = new Map<string, unknown>();
 
+// Allow other modules (e.g. prefetching) to warm the cache for a key.
+export function seedCache(cacheKey: string, data: unknown): void {
+  cache.set(cacheKey, data);
+}
+
 export function useResource<T>(
   cacheKey: string | null,
   loader: (signal: AbortSignal) => Promise<T>,
