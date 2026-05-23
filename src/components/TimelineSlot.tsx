@@ -26,9 +26,17 @@ export function TimelineSlot({ slug, rs, offsetMinutes, now, isFavorited, style 
         <span className="text-[10px] font-medium tabular-nums text-ink-faint">
           {formatTime(rs.start, offsetMinutes)}
         </span>
-        <span className="text-[9px] tabular-nums text-ink-faint/70">
-          {durationLabel(parseDurationHours(rs.slot.duration))}
-        </span>
+        <div className="flex items-center gap-1">
+          {live && (
+            <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-emerald-300">
+              <span className="h-1 w-1 animate-pulse-dot rounded-full bg-emerald-400" />
+              Live
+            </span>
+          )}
+          <span className="text-[9px] tabular-nums text-ink-faint/70">
+            {durationLabel(parseDurationHours(rs.slot.duration))}
+          </span>
+        </div>
       </div>
 
       {/* Title */}
@@ -45,14 +53,6 @@ export function TimelineSlot({ slug, rs, offsetMinutes, now, isFavorited, style 
       {rs.room && (
         <span className="mt-auto text-[10px] text-ink-faint truncate">
           {rs.room.name}
-        </span>
-      )}
-
-      {/* Live badge */}
-      {live && (
-        <span className="absolute right-1.5 top-1.5 inline-flex items-center gap-0.5 rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-emerald-300">
-          <span className="h-1 w-1 animate-pulse-dot rounded-full bg-emerald-400" />
-          Live
         </span>
       )}
     </div>
