@@ -1,15 +1,20 @@
 import { AnimatePresence, MotionConfig } from "framer-motion";
+import { useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { FavoritesProvider } from "./FavoritesContext";
 import { ThemeProvider } from "./ThemeContext";
 import { EventLayout } from "./components/EventLayout";
 import { EventsScreen } from "./screens/EventsScreen";
+import { InstallScreen } from "./screens/InstallScreen";
 import { NowNextScreen } from "./screens/NowNextScreen";
 import { ScheduleScreen } from "./screens/ScheduleScreen";
 import { BrowseScreen } from "./screens/BrowseScreen";
 import { AKDetailScreen } from "./screens/AKDetailScreen";
 import { RoomsScreen } from "./screens/RoomsScreen";
 import { AgendaScreen } from "./screens/AgendaScreen";
+import { useStandalone } from "./hooks/useStandalone";
+
+const SKIP_KEY = "ak-skip-install";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -34,11 +39,25 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  const standalone = useStandalone();
+  const [skipped, setSkipped] = useState(
+    () => sessionStorage.getItem(SKIP_KEY) === "1",
+  );
+
+  const skipInstall = () => {
+    sessionStorage.setItem(SKIP_KEY, "1");
+    setSkipped(true);
+  };
+
   return (
     <MotionConfig reducedMotion="user">
       <ThemeProvider>
         <FavoritesProvider>
-          <AnimatedRoutes />
+          {!standalone && !skipped ? (
+            <InstallScreen onSkip={skipInstall} />
+          ) : (
+            <AnimatedRoutes />
+          )}
         </FavoritesProvider>
       </ThemeProvider>
     </MotionConfig>
