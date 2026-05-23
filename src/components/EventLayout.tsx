@@ -74,7 +74,7 @@ export function EventLayout() {
       <LayoutContext.Provider value={{ scrollRef }}>
         <OfflineBanner online={online} lastUpdated={lastUpdated} />
         <motion.div
-          className="mx-auto flex h-dvh max-w-screen-sm flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
+          className="mx-auto flex h-dvh max-w-screen-sm flex-col pb-[calc(3.6rem+env(safe-area-inset-bottom))]"
           {...pageTransition}
         >
           <PullToRefresh onRefresh={handleRefresh} scrollRef={scrollRef}>
