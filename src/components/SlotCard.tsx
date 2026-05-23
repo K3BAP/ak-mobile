@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
+import { MapPin, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { ResolvedSlot } from "../lib/types";
 import { accent } from "../lib/color";
 import { durationLabel, formatTime, parseDurationHours } from "../lib/time";
 import { CategoryPill } from "./CategoryPill";
+import { useFavorites } from "../FavoritesContext";
 import { springConfig } from "../lib/animations";
 
 export function SlotCard({
@@ -20,6 +21,8 @@ export function SlotCard({
   now?: Date;
   showRoom?: boolean;
 }) {
+  const { has } = useFavorites(slug);
+  const favorited = rs.ak ? has(rs.ak.id) : false;
   const live = now ? rs.start <= now && now < rs.end : false;
   const past = now ? rs.end <= now : false;
   const title = rs.ak?.name ?? "Reserved";
@@ -42,6 +45,9 @@ export function SlotCard({
 
       <div className="min-w-0 flex-1">
         <div className="flex items-start gap-2">
+          {favorited && (
+            <Star className="mt-0.5 h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-400" />
+          )}
           <h3 className="min-w-0 flex-1 text-[15px] font-semibold leading-snug line-clamp-2">
             {title}
           </h3>
