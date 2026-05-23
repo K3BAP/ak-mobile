@@ -19,7 +19,7 @@ export function BottomNav({ slug }: { slug: string }) {
   );
 
   return (
-    <nav className="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-line/70 bg-bg/85 backdrop-blur-xl">
+    <nav className="app-bottom-nav safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-line/70 bg-bg/85 backdrop-blur-xl">
       <div className="relative mx-auto flex max-w-screen-sm items-stretch justify-around px-1">
         {activeIndex >= 0 && (
           <div

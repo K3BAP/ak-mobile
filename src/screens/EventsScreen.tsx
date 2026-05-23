@@ -47,7 +47,7 @@ export function EventsScreen() {
         </p>
       </header>
 
-      <div className="sticky top-0 z-10 bg-bg/80 px-5 py-3 backdrop-blur-xl">
+      <div className="events-search-sticky sticky top-0 z-10 bg-bg/80 px-5 py-3 backdrop-blur-xl">
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
           <input

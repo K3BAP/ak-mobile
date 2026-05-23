@@ -23,7 +23,7 @@ export function TopBar({
   };
 
   return (
-    <header className="safe-top sticky top-0 z-30 border-b border-line/70 bg-bg/80 backdrop-blur-xl">
+    <header className="app-top-bar safe-top sticky top-0 z-30 border-b border-line/70 bg-bg/80 backdrop-blur-xl">
       <div className="flex items-center gap-2 px-3 pb-2.5 pt-2.5">
         {back !== undefined && (
           <motion.button
