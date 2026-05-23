@@ -306,6 +306,13 @@
   border-radius: 1.25rem;
 }
 
+/* Add breathing room between the detached top pill and the first content block below it.
+   Needed because the liquid themes remove the bottom border that normally provides
+   visual separation. 0.75rem matches the pill’s inset from the viewport edges. */
+:is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .app-top-bar + * {
+  margin-top: 0.75rem;
+}
+
 :is([data-theme="liquid-glass"], [data-theme="liquid-dark"]) .app-bottom-nav {
   left: 0.75rem;
   right: 0.75rem;
