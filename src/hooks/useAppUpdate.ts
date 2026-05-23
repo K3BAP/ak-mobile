@@ -30,9 +30,25 @@ export function useAppUpdate(): { needRefresh: boolean; reload: () => void } {
     };
   }, []);
 
+  // Drive skip-waiting -> controllerchange -> reload ourselves rather than relying
+  // on updateServiceWorker(true)'s internal `isUpdate` heuristic (which can no-op).
+  // A plain reload while the OLD SW still controls the page just re-serves the
+  // cached build, so we must wait for the new SW to take control before reloading.
   const reload = () => {
-    updateServiceWorker();
-    window.location.reload();
+    const waiting = registration.current?.waiting;
+    if (waiting) {
+      navigator.serviceWorker.addEventListener(
+        "controllerchange",
+        () => window.location.reload(),
+        { once: true },
+      );
+      waiting.postMessage({ type: "SKIP_WAITING" });
+      // Belt-and-suspenders: also kick the plugin's own skip-waiting path.
+      void updateServiceWorker(true);
+    } else {
+      // No waiting worker (already up to date / dev): a normal reload is enough.
+      window.location.reload();
+    }
   };
 
   return { needRefresh, reload };
